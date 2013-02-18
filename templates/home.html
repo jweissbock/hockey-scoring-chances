@@ -1,7 +1,33 @@
-{% extends "layout.html" %}
-{% block content %}
-  <div class="jumbo">
-    <h1>Welcome to the Flask app<h1>
-    <h2>This is the home page for the Flask app<h2>
-  </div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title></title>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+	  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+      <script src="{{ url_for('static', filename='javascript/script.js') }}" type="text/javascript" charset="utf-8" async defer></script>
+   </head>
+   <body>
+   		<div id="content">
+   			<div id="gameInfo">
+   				Game ID: <input type="text" id="gameID" /> <input type="button" id="enterGame" value="Enter Game ID" />
+   			</div>
+			<div id="hockeyRinkDiv">
+				<div id="hockeyRinkHome">Home</div>
+				<div id="hockeyRinkAway">Away</div>
+			</div>
+			<div id="sideBar">
+				<table id="shotInfo">
+					<tr>
+						<td>#</td>
+						<td>Team</td>
+						<td>Period</td>
+						<td>Time Remaining</td>
+						<td>Shot Type</td>
+						<td>Comment</td>
+						<td></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+   </body>
+</html>

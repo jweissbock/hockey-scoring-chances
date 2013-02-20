@@ -45,7 +45,8 @@ table {
 #content {
 	width: 1070px;
 	margin: 0px auto;
-	margin-top: 12px
+	margin-top: 12px;
+	display: none;
 }
 
 #hockeyRinkDiv {

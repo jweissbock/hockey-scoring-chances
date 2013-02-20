@@ -20,7 +20,7 @@ $(document).ready(function() {
 		counter++;
 	});
 	
-	$(".removeShot").live("click", function(e) {
+	$(document).on("click", ".removeShot", function(e) {
 		var num = $(this).attr('name');
 		// remove puck
 		$(".puck[name="+num+"]").remove();
@@ -29,6 +29,19 @@ $(document).ready(function() {
 		// renumber
 		
 		// total counter--
+	});
+
+	$("#enterGame").click(function(e) {
+		var gameID = $("#gameID").val();
+		if (isNaN(gameID)) {
+			return;
+		}
+		gameID = parseInt(gameID);
+		$.getJSON("/getGame", { gID: gameID }, function(data) {
+			alert(data[0].gid)
+		})
+		.fail(function() { alert('failed to AJAX'); });
+		$("#content").show();
 	});
 	
 	function tableRow(counter, team) {

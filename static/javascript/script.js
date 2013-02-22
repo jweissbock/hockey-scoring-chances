@@ -31,6 +31,7 @@ $(document).ready(function() {
 		// total counter--
 	});
 
+	// when user clicks on the button to enter game ID
 	$("#enterGame").click(function(e) {
 		var gameID = $("#gameID").val();
 		if (isNaN(gameID)) {
@@ -38,7 +39,7 @@ $(document).ready(function() {
 		}
 		gameID = parseInt(gameID);
 		$.getJSON("/getGame", { gID: gameID }, function(data) {
-			alert(data[0].gid)
+			$.jGrowl(data[0].gid);
 		})
 		.fail(function() { alert('failed to AJAX'); });
 		$("#content").show();

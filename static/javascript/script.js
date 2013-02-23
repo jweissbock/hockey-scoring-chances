@@ -39,10 +39,10 @@ $(document).ready(function() {
 			return;
 		}
 		gameID = parseInt(gameID);
-		$.getJSON("/getGame", { gID: gameID }, function(data) {
+		gYear = $("#gYear").val()
+		$.getJSON("/getGame", { gID: gameID, gYear: gYear }, function(data) {
 			if (data[0].success != true) {
 				$.jGrowl('Failed to find the game ID');
-				$.jGrowl(data[0].gid);
 				$("#content").hide();
 				return
 			}

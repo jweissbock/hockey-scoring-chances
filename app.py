@@ -13,7 +13,12 @@ def about():
 
 @app.route('/getGame')
 def getGame():
-	data = [{'gid' : request.args.get('gID')}]
+	gameID = request.args.get('gID')
+	if gameID.isdigit() == True:
+		success = True
+	else:
+		success = False
+	data = [{'gid' : gameID, 'success' : success}]
 	return json.dumps(data)
 
 if __name__ == '__main__':

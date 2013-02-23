@@ -35,14 +35,20 @@ $(document).ready(function() {
 	$("#enterGame").click(function(e) {
 		var gameID = $("#gameID").val();
 		if (isNaN(gameID)) {
+			$("#content").hide();
 			return;
 		}
 		gameID = parseInt(gameID);
 		$.getJSON("/getGame", { gID: gameID }, function(data) {
-			$.jGrowl(data[0].gid);
+			if (data[0].success != true) {
+				$.jGrowl('Failed to find the game ID');
+				$.jGrowl(data[0].gid);
+				$("#content").hide();
+				return
+			}
+			$("#content").show();
 		})
 		.fail(function() { alert('failed to AJAX'); });
-		$("#content").show();
 	});
 	
 	function tableRow(counter, team) {

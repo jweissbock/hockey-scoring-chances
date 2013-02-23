@@ -1,9 +1,35 @@
-from flask import Flask, render_template, request
-import re
-import json
+from __future__ import with_statement
+from flask import Flask, render_template, request, session, g, redirect, url_for, \
+	 abort, flash
 from urllib2 import urlopen
+from contextlib import closing
+import re, json, sqlite3
+
+DATABASE = 'hsc.db'
+DEBUG = True
+SECRET_KEY = 'I Love Don Cherry'
+USERNAME = 'admin'
+PASSWORD = 'default'
 
 app = Flask(__name__)
+app.config.from_object(__name__)
+
+def connect_db():
+	return sqlite3.connect(app.config['DATABASE'])
+
+def init_db():
+	with closing(connect_db()) as db:
+		with app.open_resource('schema.sql') as f:
+			db.cursor().executescript(f.read())
+		db.commit()
+
+@app.before_request
+def before_request():
+	g.db = connect_db()
+
+@app.teardown_request
+def teardown_request(exception):
+	g.db.close()
 
 @app.route('/')
 def home():
@@ -42,4 +68,4 @@ def getGame():
 	return json.dumps(data)
 
 if __name__ == '__main__':
-  app.run(debug=True)
+  app.run()

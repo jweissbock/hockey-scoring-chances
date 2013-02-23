@@ -69,6 +69,12 @@ table {
 	float: left;
 	width: 576px;
 	padding-left: 1em;
+	text-align: center;
+	margin: auto;
+}
+
+#shotInfo {
+	margin: auto;
 }
 
 #shotInfo td {

@@ -32,7 +32,21 @@ $(document).ready(function() {
 	});
 
 	$("#saveChances").on('click', function(e) {
-		$.jGrowl($("#sGameID").val());
+		var data = {};
+		data['gameID'] = $("#sGameID").val();
+		var puckNum = 0;
+		$("div.puck").each(function() {
+			var position = $(this).offset();
+			var puckName = 'puck' + puckNum;
+			data[puckName+'left'] = position.left;
+			data[puckName+'top'] = position.top;
+			puckNum++;
+		});
+		// now we have the data, need to ajax it
+		$.getJSON("/saveGame", data, function(data) {
+
+		})
+		.fail(function() { $.jGrowl('Failed to save data.') });
 	});
 
 	// when user clicks on the button to enter game ID

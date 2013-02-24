@@ -39,6 +39,14 @@ def home():
 def about():
   return render_template('about.html')
 
+@app.route('/saveGame')
+def saveGame():
+	args = sorted(request.args)
+	gameID = request.args.get(args.pop(0))
+	print args
+	data = [{ 'success' : True, 'gid' : gameID }]
+	return json.dumps(data)
+
 @app.route('/getGame')
 def getGame():
 	# check if the id is a valid id

@@ -31,6 +31,10 @@ $(document).ready(function() {
 		// total counter--
 	});
 
+	$("#saveChances").on('click', function(e) {
+		$.jGrowl($("#sGameID").val());
+	});
+
 	// when user clicks on the button to enter game ID
 	$("#enterGame").click(function(e) {
 		var gameID = $("#gameID").val();
@@ -47,6 +51,7 @@ $(document).ready(function() {
 				return
 			}
 			$("#content").show();
+			$("#sGameID").val(gameID);
 		})
 		.fail(function() { alert('failed to AJAX'); });
 	});

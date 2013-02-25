@@ -43,8 +43,8 @@ def about():
 def saveGame():
 	args = sorted(request.args)
 	gameID = request.args.get(args.pop(0))
-	print args
-	data = [{ 'success' : True, 'gid' : gameID }]
+	pucks = len(args) / 2
+	data = [{ 'success' : True, 'gid' : gameID, 'pucks' : pucks }]
 	return json.dumps(data)
 
 @app.route('/getGame')

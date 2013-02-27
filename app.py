@@ -41,9 +41,24 @@ def about():
 
 @app.route('/saveGame')
 def saveGame():
+	n = 6# n = depending on how many items we are saving per puck
 	args = sorted(request.args)
+	print args
 	gameID = request.args.get(args.pop(0))
-	pucks = len(args) / 2
+	gameYear = request.args.get(args.pop(0))
+	pucks = len(args) / n #n
+	# need to check each elemtn value...
+		# team is Home or Away, make numeric
+		#period is a number, 1-3,
+		# time is 0-1200
+		# comment is a value
+	# fuck it, delete all events from game ID and save all new ones for now
+	# later, find difference between database and what submited, delete from DB insert new ones
+	# need to keep a log
+	# delete all from this game id and year?
+	# while loop not empty
+		# pop top n off
+		# store into database
 	data = [{ 'success' : True, 'gid' : gameID, 'pucks' : pucks }]
 	return json.dumps(data)
 

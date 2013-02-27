@@ -6,8 +6,7 @@ create table chances (
 	team integer not null,
 	period integer not null,
 	time integer not null,
-	shottype integer not null,
-	comment integer not null,
+	comment text,
 	posx integer not null,
 	posy integer not null
 );

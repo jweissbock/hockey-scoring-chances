@@ -42,24 +42,71 @@ def about():
 @app.route('/saveGame')
 def saveGame():
 	n = 6# n = depending on how many items we are saving per puck
+	msg = "Not working yet."
+		# check if number - 2 % n = 0 to see if has right # parameters
+	if ((len(request.args) - 2) % n > 0):
+		json.dumps([{ 'success' : False, 'msg' : 'Invalid number of arguements.' }])
 	args = sorted(request.args)
 	print args
-	gameID = request.args.get(args.pop(0))
-	gameYear = request.args.get(args.pop(0))
-	pucks = len(args) / n #n
-	# need to check each elemtn value...
-		# team is Home or Away, make numeric
-		#period is a number, 1-3,
-		# time is 0-1200
-		# comment is a value
-	# fuck it, delete all events from game ID and save all new ones for now
+	# need to check if these are valid
+	gameID = request.args.get('gameID')
+	gameYear = request.args.get('gameYear') 
+	numPucks = (len(args)-2) / n 
+	pucks = [dict() for x in range(numPucks)]
+	# fill up the pucks
+	for i in range(numPucks):
+		# comment
+		comment = 'puck'+str(i)+'comment'
+		if comment not in request.args:
+			return json.dumps({'success': False, 'msg' : 'No puck comment for '+str(i)})
+		pucks[i]['comment'] = request.args.get(comment)
+		# puck position
+		puckleft = 'puck'+str(i)+'left'
+		pucktop = 'puck'+str(i)+'top'
+		if pucktop not in request.args or puckleft not in request.args:
+			return json.dumps({'success' : False, 'msg' : 'Missing puck location data for '+str(i)})
+		elif not request.args.get(puckleft).isdigit():
+			return json.dumps({'success' : False, 'msg' : 'Puck left is not a digit for '+str(i)})
+		elif not request.args.get(pucktop).isdigit():
+			return json.dumps({'success' : False, 'msg' : 'Puck top is not a digit for '+str(i)})
+		pucks[i]['left'] = int(request.args.get(puckleft))
+		pucks[i]['top'] = int(request.args.get(pucktop))
+		# puck time
+		pucktime = 'puck'+str(i)+'time'
+		if pucktime not in request.args:
+			return json.dumps({'success' : False, 'msg' : 'Missing puck time data for '+str(i)})
+		elif not request.args.get(pucktime).isdigit():
+			return json.dumps({'success' : False, 'msg' : 'Puck time is not a digit for '+str(i)})
+		elif not float(request.args.get(pucktime)).is_integer():	
+			return json.dumps({'success' : False, 'msg' : 'Puck time is not an integer for '+str(i)})
+		elif int(request.args.get(pucktime)) not in range(0,1201):
+			return json.dumps({'success' : False, 'msg' : 'Puck time is not an allowable range for '+str(i)})
+		pucks[i]['time'] = int(request.args.get(pucktime))
+		# puck period
+		puckperiod = 'puck'+str(i)+'period'
+		if puckperiod not in request.args:
+			return json.dumps({'success' : False, 'msg' : 'Missing puck period data for '+str(i)})
+		elif not request.args.get(puckperiod).isdigit():
+			return json.dumps({'success' : False, 'msg' : 'Puck period is not a digit for '+str(i)})
+		elif int(request.args.get(puckperiod)) not in range(0,4):
+			return json.dumps({'success' : False, 'msg' : 'Puck period is not an allowable range for '+str(i)})
+		pucks[i]['period'] = int(request.args.get(puckperiod))
+		#Puck team
+		puckteam = 'puck'+str(i)+'team'
+		if puckteam not in request.args:
+			return json.dumps({'success': False, 'msg' : 'No puck team for '+str(i)})
+		if request.args.get(puckteam) == 'Home':
+			pucks[i]['team'] = 0
+		else:
+			pucks[i]['team'] = 1
+	print pucks
+	# begin transaction
+	# delete all events from game ID and save all new ones for now
+	#  
+
 	# later, find difference between database and what submited, delete from DB insert new ones
 	# need to keep a log
-	# delete all from this game id and year?
-	# while loop not empty
-		# pop top n off
-		# store into database
-	data = [{ 'success' : True, 'gid' : gameID, 'pucks' : pucks }]
+	data = [{ 'success' : False, 'msg' : msg}]
 	return json.dumps(data)
 
 @app.route('/getGame')

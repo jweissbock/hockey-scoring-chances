@@ -44,7 +44,7 @@ $(document).ready(function() {
 			// need team id, period, time, comment
 			data[puckName+'team'] = $("tr[name="+puckCounter+"]").find(".team").text();
 			data[puckName+'period'] = $("tr[name="+puckCounter+"]").find(".period").val();
-			data[puckName+'time'] = $("tr[name="+puckCounter+"]").find(".pMin").val()*60 + $("tr[name="+puckCounter+"]").find(".pSec").val();;
+			data[puckName+'time'] = parseInt($("tr[name="+puckCounter+"]").find(".pMin").val())*60 + parseInt($("tr[name="+puckCounter+"]").find(".pSec").val());
 			data[puckName+'comment'] = $("tr[name="+puckCounter+"]").find(".comment").val();
 			data[puckName+'left'] = position.left;
 			data[puckName+'top'] = position.top;
@@ -53,6 +53,11 @@ $(document).ready(function() {
 		// now we have the data, need to ajax it
 		$.getJSON("/saveGame", data, function(data) {
 			$.jGrowl('Nothing saved yet...');
+			if (data[0].success == true) {
+				$.jGrowl('Saved.');
+			} else {
+				$.jGrowl('Failed to save.  '+data[0].msg);
+			}
 		})
 		.fail(function() { $.jGrowl('Failed to save data.') });
 	});

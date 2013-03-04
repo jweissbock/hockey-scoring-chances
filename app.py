@@ -47,7 +47,7 @@ def saveGame():
 	if ((len(request.args) - 2) % n > 0):
 		json.dumps([{ 'success' : False, 'msg' : 'Invalid number of arguements.' }])
 	args = sorted(request.args)
-	print args
+	#print args
 	# need to check if these are valid
 	gameID = request.args.get('gameID')
 	gameYear = request.args.get('gameYear') 
@@ -59,7 +59,7 @@ def saveGame():
 		comment = 'puck'+str(i)+'comment'
 		if comment not in request.args:
 			return json.dumps({'success': False, 'msg' : 'No puck comment for '+str(i)})
-		pucks[i]['comment'] = request.args.get(comment)
+		pucks[i]['comment'] = request.args.get(comment).strip()
 		# puck position
 		puckleft = 'puck'+str(i)+'left'
 		pucktop = 'puck'+str(i)+'top'
@@ -99,14 +99,24 @@ def saveGame():
 			pucks[i]['team'] = 0
 		else:
 			pucks[i]['team'] = 1
-	print pucks
+	#print pucks
 	# begin transaction
 	# delete all events from game ID and save all new ones for now
-	#  
-
+	#g.db.execute('BEGIN TRANSACTION')
+	try:
+		g.db.execute('DELETE FROM chances WHERE gameid = ?', [gameID])
+		g.db.commit()
+		for p in pucks:
+			g.db.execute('INSERT INTO chances (gameid, yearid, team, period, time, comment, posx, posy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+						[gameID, gameYear, p['team'], p['period'], p['time'], p['comment'], p['left'], p['top']])
+			g.db.commit()
+	except:
+		return json.dumps({ 'success' : False, 'msg' : 'Error in saving to database'})
+	#g.db.execute('COMMIT')
 	# later, find difference between database and what submited, delete from DB insert new ones
 	# need to keep a log
-	data = [{ 'success' : False, 'msg' : msg}]
+	msg = 'Saved!'
+	data = [{ 'success' : True, 'msg' : msg}]
 	return json.dumps(data)
 
 @app.route('/getGame')

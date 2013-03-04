@@ -52,7 +52,6 @@ $(document).ready(function() {
 		});
 		// now we have the data, need to ajax it
 		$.getJSON("/saveGame", data, function(data) {
-			$.jGrowl('Nothing saved yet...');
 			if (data[0].success == true) {
 				$.jGrowl('Saved.');
 			} else {

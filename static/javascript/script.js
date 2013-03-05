@@ -103,7 +103,6 @@ $(document).ready(function() {
 					// change period
 					$("tr[name="+i+"]").find(".period").val(c.period)
 					// change time
-					$.jGrowl(c.time);
 					cTimeMin = Math.floor(c.time / 60);
 					cTimeSec = c.time % 60;
 					$("tr[name="+i+"]").find(".pMin").val(cTimeMin);

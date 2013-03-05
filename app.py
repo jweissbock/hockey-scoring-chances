@@ -145,6 +145,7 @@ def getGame():
 	if (code / 100 >= 4):
 		success = False
 	# get all puck data
+	pucks = []
 	try:
 		cur = g.db.execute('SELECT team, period, time, comment, posx, posy FROM chances WHERE gameid = ? AND yearid = ?', 
 							[gameID, gYear])

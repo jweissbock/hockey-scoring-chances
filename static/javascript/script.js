@@ -77,8 +77,41 @@ $(document).ready(function() {
 				$("#content").hide();
 				return
 			}
+			// clear all table items
+			// clear all pucks
+			$(".puck").remove();
+			$(".puckTableRow").remove();
 			$("#content").show();
 			$("#sGameID").val(gameID);
+			// need to clear all pucks on screen atm
+			// update overall counter
+			// now have all puck data, need to output it on table + image
+			counter = 1;
+			if (data[0].getChances == true) {
+				for (i=0; i<data[0].chances.length; i++) {
+					c = data[0].chances[i];
+					var e = new jQuery.Event("click");
+					e.pageX = c.left;
+					e.pageY = c.top;
+					if (c.team == 1) { 
+						team = "Away"; 
+						$("#hockeyRinkAway").trigger(e);
+					} else { 
+						team = "Home";
+						$("#hockeyRinkHome").trigger(e); 
+					}
+					// change period
+					$("tr[name="+i+"]").find(".period").val(c.period)
+					// change time
+					$.jGrowl(c.time);
+					cTimeMin = Math.floor(c.time / 60);
+					cTimeSec = c.time % 60;
+					$("tr[name="+i+"]").find(".pMin").val(cTimeMin);
+					$("tr[name="+i+"]").find(".pSec").val(cTimeSec);
+					// change comment
+					$("tr[name="+i+"]").find(".comment").val(c.comment)
+				}
+			}
 		})
 		.fail(function() { alert('failed to AJAX'); });
 	});
@@ -111,7 +144,7 @@ $(document).ready(function() {
 
 	// find a way to get rid of the for loops each time
 	function tableRow(counter, team) {
-		var row = "<tr name="+counter+">"
+		var row = "<tr class=\"puckTableRow\" name="+counter+">"
 				+"<td>"+counter+"</td>"
 				+"<td class=\"team\">"+team+"</td>"
 				+"<td><select class=\"period\"><option>1</option><option>2</option><option>3</option></td>"

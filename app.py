@@ -144,7 +144,16 @@ def getGame():
 		success = False
 	if (code / 100 >= 4):
 		success = False
-	data = [{'gid' : gameID, 'success' : success}]
+	# get all puck data
+	try:
+		cur = g.db.execute('SELECT team, period, time, comment, posx, posy FROM chances WHERE gameid = ? AND yearid = ?', 
+							[gameID, gYear])
+		pucks = [dict(top=row[5], left=row[4], period=row[1], time=row[2], team=row[0], comment=row[3]) for row in cur.fetchall()]
+		getPucks = True
+	except:
+		getPucks = False
+
+	data = [{'gid' : gameID, 'success' : success, 'getChances' : getPucks, 'chances' : pucks}]
 	return json.dumps(data)
 
 if __name__ == '__main__':

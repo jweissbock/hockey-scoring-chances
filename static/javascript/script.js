@@ -100,15 +100,16 @@ $(document).ready(function() {
 						team = "Home";
 						$("#hockeyRinkHome").trigger(e); 
 					}
+					rowi = i+1
 					// change period
-					$("tr[name="+i+"]").find(".period").val(c.period)
+					$("tr[name="+rowi+"]").find(".period").val(c.period)
 					// change time
 					cTimeMin = Math.floor(c.time / 60);
 					cTimeSec = c.time % 60;
-					$("tr[name="+i+"]").find(".pMin").val(cTimeMin);
-					$("tr[name="+i+"]").find(".pSec").val(cTimeSec);
+					$("tr[name="+rowi+"]").find(".pMin").val(cTimeMin);
+					$("tr[name="+rowi+"]").find(".pSec").val(cTimeSec);
 					// change comment
-					$("tr[name="+i+"]").find(".comment").val(c.comment)
+					$("tr[name="+rowi+"]").find(".comment").val(c.comment)
 				}
 			}
 		})

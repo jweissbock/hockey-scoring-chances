@@ -1,0 +1,10 @@
+Game Reports
+
+Do we want user accounts?
+Better way to save game without mass deleting?
+Auto-save?
+Auto-load to allow collaboration?
+Logging of who is changing what by IP? / prevent ways for users to delete everything
+Manual type in game type
+shot type
+Toggle tracker on/off?

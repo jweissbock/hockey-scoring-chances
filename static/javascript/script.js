@@ -31,6 +31,12 @@ $(document).ready(function() {
 		// total counter--
 	});
 
+	$("#gameReport").on('click', function(e) {
+		gameId = $("#sGameID").val();
+		
+		window.open('/gamereport/'+gameId, '_blank')
+	});
+
 	$("#saveChances").on('click', function(e) {
 		$.jGrowl("Saving...")
 		var data = {};

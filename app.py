@@ -39,6 +39,13 @@ def home():
 def about():
   return render_template('about.html')
 
+@app.route('/gamereport/<int:gameid>')
+def gamereport(gameid):
+	# check if if game is valid or not
+	# motivation: http://flamesnation.ca/2012/3/9/flames-scoring-chances-game-68-vs-winnipeg-jets
+	bigdata = [gameid]
+	return render_template('gamereport.html', data=bigdata)
+
 @app.route('/saveGame')
 def saveGame():
 	n = 6# n = depending on how many items we are saving per puck

@@ -49,7 +49,6 @@ def gamereport(gameid):
 	# check if is a real game
 	# motivation: http://flamesnation.ca/2012/3/9/flames-scoring-chances-game-68-vs-winnipeg-jets
 	bigdata = []
-	print 'trying to get data'
 	try:
 		cur = g.db.execute('SELECT team,period,time,comment FROM chances WHERE gameid=? ORDER BY period, time DESC', 
 						[gameid])
@@ -61,6 +60,10 @@ def gamereport(gameid):
 	# get game events from scrape.getGameStates
 	# need to find a way to cache it
 	events = scrape.getGameStates(gameid)
+	# consider putting in dummy data until we are done building
+
+	gameSummaryHome = {}
+	gameSummaryAway = {}
 
 	# pass over bigdata with algorithm
 	count = 0
@@ -68,12 +71,66 @@ def gamereport(gameid):
 		searching = True
 		while searching:
 			if d[1] == events[count][0] and d[2] <= events[count][1] and d[2] > events[count+1][1]:
+				# for each player on each team, record scoring chance for/against and at what state
+				# use dictionary for each player number with a list
+				# here's the part to update the players overall count
+				homeNums = events[count][3]
+				awayNums = events[count][2]
+
+				chance = d[0]
+
+				home = len(homeNums)
+				away = len(awayNums)
+				state = str(home-1)+"v"+str(away-1)
+
+				# 3-4, 6-7, 9-10
+				if home == away:
+					if chance == 0:
+						cLocHome = 3
+						cLocAway = 4
+					else:
+						cLocHome = 4
+						cLocAway = 3
+				elif home > away:
+					if chance == 0:
+						cLocHome = 6
+						cLocAway = 10
+					else:
+						cLocHome = 7
+						cLocAway = 9
+				elif home < away:
+					if chance == 0:
+						cLocHome = 9
+						cLocAway = 6
+					else:
+						cLocHome = 10
+						cLocAway = 7
+
+				for num in homeNums:
+					if num not in gameSummaryHome:
+						gameSummaryHome[num] = [num]+[0]*10
+
+					gameSummaryHome[num][cLocHome] += 1
+
+				for num in awayNums:
+					if num not in gameSummaryAway:
+						gameSummaryAway[num] = [num]+[0]*10
+
+					gameSummaryAway[num][cLocAway] += 1
+
 				awaydata = events[count][2] + [' ']*(6-len(events[count][2]))
 				homedata = events[count][3] + [' ']*(6-len(events[count][3]))
-				bigdata[i] = bigdata[i] + homedata + awaydata
+				bigdata[i] = bigdata[i] + homedata + awaydata + [state]
 				searching = False
 			else:
 				count = count + 1
+
+	gameSummaryHome = [gameSummaryHome[x] for x in gameSummaryHome]
+	gameSummaryHome.sort(key = lambda row : row[0])
+	gameSummaryAway = [gameSummaryAway[x] for x in gameSummaryAway]
+	gameSummaryAway.sort(key = lambda row: row[0])
+
+	# with user dictionary, look up time on ice + name 
 
 	# ugly pass over all data and modify it
 	for row in bigdata:
@@ -81,12 +138,7 @@ def gamereport(gameid):
 		time = divmod(row[2], 60)
 		row[2] = "%d:%02d" % (time[0], time[1])
 
-		# need to test if home (4-9), away (10-15)
-		home = 5 - row[4:10].count(' ')
-		away = 5 - row[10:16].count(' ')
-		row.append(str(home)+"v"+str(away))
-
-	return render_template('gamereport.html', data=bigdata)
+	return render_template('gamereport.html', data=bigdata, homeSummary=gameSummaryHome, awaySummary=gameSummaryAway)
 
 @app.route('/saveGame')
 def saveGame():

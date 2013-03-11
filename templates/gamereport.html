@@ -27,8 +27,8 @@
 		</tr>
 	{% endfor %}
 </table>
-
-<table>
+<h1>Home Team Player Summary</h1>
+<table border="1" style="margin:auto">
 	<tr>
 		<td>#</td>
 		<td>Player</td>
@@ -42,6 +42,36 @@
 		<td> </td>
 		<td> </td>
 	</tr>
+	{% for row in homeSummary %}
+		<tr>
+			{% for cell in row %}
+				<td>{{ cell }}</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+<h1>Away Player Scoring Summary</h1>
+<table border="1" style="margin:auto">
+	<tr>
+		<td>#</td>
+		<td>Player</td>
+		<td>EV</td>
+		<td> </td>
+		<td> </td>
+		<td>PP</td>
+		<td> </td>
+		<td> </td>
+		<td>SH</td>
+		<td> </td>
+		<td> </td>
+	</tr>
+	{% for row in awaySummary %}
+		<tr>
+			{% for cell in row %}
+				<td>{{ cell }}</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
 </table>
 
 </div>

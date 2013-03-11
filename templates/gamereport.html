@@ -9,7 +9,7 @@
 
 <h1>Scoring Chance Summary</h1>
 
-<table id="hscsummary" style="margin:auto">
+<table id="hscsummary" style="margin:auto; border: 1px black solid" border="1">
 	<tr>
 		<td>Team</td>
 		<td>Period</td>
@@ -19,6 +19,13 @@
 		<td colspan="6">Away</td>
 		<td>State</td>
 	</tr>
+	{% for row in data %}
+		<tr>
+		{% for cell in row %}
+			<td {% if loop.index >= 5 and loop.index <= 10 %} bgcolor="#00CC00" {% endif %}>{{ cell }}</td>
+		{% endfor %}
+		</tr>
+	{% endfor %}
 </table>
 
 </div>

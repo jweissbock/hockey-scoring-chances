@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, session, g, redirect, url_for
 from urllib2 import urlopen
 from contextlib import closing
 import re, json, sqlite3
+import scrape
 
 DATABASE = 'hsc.db'
 DEBUG = True
@@ -42,8 +43,49 @@ def about():
 @app.route('/gamereport/<int:gameid>')
 def gamereport(gameid):
 	# check if if game is valid or not
+
+	# check if gameid is even in existance in our database
+
+	# check if is a real game
 	# motivation: http://flamesnation.ca/2012/3/9/flames-scoring-chances-game-68-vs-winnipeg-jets
-	bigdata = [gameid]
+	bigdata = []
+	print 'trying to get data'
+	try:
+		cur = g.db.execute('SELECT team,period,time,comment FROM chances WHERE gameid=? ORDER BY period, time DESC', 
+						[gameid])
+		bigdata = [list(row) for row in cur.fetchall()]
+	except:
+		# need a better error
+		pass
+
+	# get game events from scrape.getGameStates
+	# need to find a way to cache it
+	events = scrape.getGameStates(gameid)
+
+	# pass over bigdata with algorithm
+	count = 0
+	for i, d in enumerate(bigdata):
+		searching = True
+		while searching:
+			if d[1] == events[count][0] and d[2] <= events[count][1] and d[2] > events[count+1][1]:
+				awaydata = events[count][2] + [' ']*(6-len(events[count][2]))
+				homedata = events[count][3] + [' ']*(6-len(events[count][3]))
+				bigdata[i] = bigdata[i] + homedata + awaydata
+				searching = False
+			else:
+				count = count + 1
+
+	# ugly pass over all data and modify it
+	for row in bigdata:
+		row[0] = "Home" if row[0] == 0 else "Away"
+		time = divmod(row[2], 60)
+		row[2] = "%d:%02d" % (time[0], time[1])
+
+		# need to test if home (4-9), away (10-15)
+		home = 5 - row[4:10].count(' ')
+		away = 5 - row[10:16].count(' ')
+		row.append(str(home)+"v"+str(away))
+
 	return render_template('gamereport.html', data=bigdata)
 
 @app.route('/saveGame')

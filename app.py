@@ -101,10 +101,10 @@ def gamereport(gameid):
 				elif home < away:
 					if chance == 0:
 						cLocHome = 9
-						cLocAway = 6
+						cLocAway = 7
 					else:
 						cLocHome = 10
-						cLocAway = 7
+						cLocAway = 6
 
 				for num in homeNums:
 					if num not in gameSummaryHome:
@@ -125,10 +125,13 @@ def gamereport(gameid):
 			else:
 				count = count + 1
 
-	gameSummaryHome = [gameSummaryHome[x] for x in gameSummaryHome]
-	gameSummaryHome.sort(key = lambda row : row[0])
-	gameSummaryAway = [gameSummaryAway[x] for x in gameSummaryAway]
-	gameSummaryAway.sort(key = lambda row: row[0])
+	# pass dictionaries to get all info
+	getPlayerInfo = scrape.getGamePlayerStats(gameSummaryHome, gameSummaryAway, gameid)
+
+	gameSummaryHome = [getPlayerInfo[0][x] for x in getPlayerInfo[0]]
+	gameSummaryHome.sort(key = lambda row : int(row[0]))
+	gameSummaryAway = [getPlayerInfo[1][x] for x in getPlayerInfo[1]]
+	gameSummaryAway.sort(key = lambda row: int(row[0]))
 
 	# with user dictionary, look up time on ice + name 
 

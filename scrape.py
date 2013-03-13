@@ -2,6 +2,45 @@ from bs4 import BeautifulSoup
 import urllib2
 import re
 
+def getGamePlayerStats(homeTeam, awayTeam, gameId):
+	# will need a try/catch
+	url = "http://www.nhl.com/scores/htmlreports/20122013/ES0"+str(gameId)+".HTM"
+
+	request = urllib2.Request(url)
+	response = urllib2.urlopen(request)
+
+	the_page = response.read()
+	soup = BeautifulSoup(the_page)
+
+	rows = soup.findAll('td', 'tborder')[0].findAll("tr", attrs={'class' : re.compile("evenColor|oddColor")})
+
+	numTimes = 0
+	team = awayTeam
+	counter = 0
+
+	for r in rows:
+		counter += 1
+		player = r.findAll('td')
+		num = player[0].text
+		if num == 'TEAM TOTALS':
+			if numTimes == 0:
+				awayTeam = team
+				team = homeTeam
+			else: 
+				pass
+			numTimes += 1
+			continue
+
+		if num in team:
+			team[num][1] = player[2].text
+			team[num][2] = player[14].text
+			team[num][5] = player[12].text
+			team[num][8] = player[13].text
+
+	homeTeam = team
+
+	return [homeTeam, awayTeam]
+
 def getGameStates(gameid):
 	url = "http://www.nhl.com/scores/htmlreports/20122013/PL0"+str(gameid)+".HTM"
 

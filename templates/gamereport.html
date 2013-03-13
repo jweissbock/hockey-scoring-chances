@@ -45,7 +45,7 @@
 	{% for row in homeSummary %}
 		<tr>
 			{% for cell in row %}
-				<td>{{ cell }}</td>
+				<td {% if loop.index in [4,7,10] %} style="color: green" {% elif loop.index in [5,8,11] %} style="color:red" {% endif %}>{{ cell }}</td>
 			{% endfor %}
 		</tr>
 	{% endfor %}
@@ -68,7 +68,7 @@
 	{% for row in awaySummary %}
 		<tr>
 			{% for cell in row %}
-				<td>{{ cell }}</td>
+				<td {% if loop.index in [4,7,10] %} style="color: green" {% elif loop.index in [5,8,11] %} style="color:red" {% endif %}>{{ cell }}</td>
 			{% endfor %}
 		</tr>
 	{% endfor %}

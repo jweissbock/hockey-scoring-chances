@@ -8,4 +8,5 @@ Auto-load to allow collaboration?
 Logging of who is changing what by IP? / prevent ways for users to delete everything
 Manual type in game type
 shot type
+period - need to add OT
 Toggle tracker on/off?

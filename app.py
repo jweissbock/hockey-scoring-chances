@@ -65,6 +65,10 @@ def gamereport(gameid):
 	gameSummaryHome = {}
 	gameSummaryAway = {}
 
+	# the fourt table data periodSummary
+	periodSummary = []
+	tempPeriodSummary = [1]+[0]*12
+
 	# pass over bigdata with algorithm
 	count = 0
 	for i, d in enumerate(bigdata):
@@ -106,6 +110,7 @@ def gamereport(gameid):
 						cLocHome = 10
 						cLocAway = 6
 
+				# start adding the rows for the inividual players in home and away
 				for num in homeNums:
 					if num not in gameSummaryHome:
 						gameSummaryHome[num] = [num]+[0]*10
@@ -117,6 +122,31 @@ def gamereport(gameid):
 						gameSummaryAway[num] = [num]+[0]*10
 
 					gameSummaryAway[num][cLocAway] += 1
+
+				# we know the state, we know the period, we can add to the variable
+				if d[1] != tempPeriodSummary[0]:
+					# new period, reset tempPeriodSummary and append old
+					tempPeriodSummary[1] = sum(tempPeriodSummary[3::2])
+					tempPeriodSummary[2] = sum(tempPeriodSummary[4::2])
+					# sum up totals
+					periodSummary.append(tempPeriodSummary)
+					tempPeriodSummary = [d[1]] + [0]*12
+				
+				# figure out which column to add to
+				if state in ["5v5", "4v4", "3v3"]:
+					periodPos = 3 if chance == 0 else 4
+				elif state == "5v4":
+					periodPos = 5 if chance == 0 else 6
+				elif state == "5v4":
+					periodPos = 7 if chance == 0 else 8
+				elif state == "4v5":
+					periodPos = 9 if chance == 0 else 10
+				else:
+					# it must be 3v5
+					periodPos = 11 if chance == 0 else 12
+
+				# add to tempPeriodSummary
+				tempPeriodSummary[periodPos] += 1
 
 				awaydata = events[count][2] + [' ']*(6-len(events[count][2]))
 				homedata = events[count][3] + [' ']*(6-len(events[count][3]))
@@ -133,7 +163,21 @@ def gamereport(gameid):
 	gameSummaryAway = [getPlayerInfo[1][x] for x in getPlayerInfo[1]]
 	gameSummaryAway.sort(key = lambda row: int(row[0]))
 
-	# with user dictionary, look up time on ice + name 
+	# update periodSummary
+	tempPeriodSummary[1] = sum(tempPeriodSummary[3::2])
+	tempPeriodSummary[2] = sum(tempPeriodSummary[4::2])
+	periodSummary.append(tempPeriodSummary)
+
+	# awayPeriodSummary
+	awayPeriodSummary = list(periodSummary[:])
+	for row in awayPeriodSummary:
+		row[1],row[2] = row[2],row[1]
+		row[3],row[4] = row[4],row[3]
+		row[5],row[10] = row[10],row[5]
+		row[6],row[9] = row[9],row[6]
+		row[7],row[12] = row[12],row[7]
+		row[8],row[11] = row[11],row[8]
+	# swap 3<->4,5<->10,6<->9,7<->12,8<->11,1<->2  
 
 	# ugly pass over all data and modify it
 	for row in bigdata:
@@ -141,7 +185,9 @@ def gamereport(gameid):
 		time = divmod(row[2], 60)
 		row[2] = "%d:%02d" % (time[0], time[1])
 
-	return render_template('gamereport.html', data=bigdata, homeSummary=gameSummaryHome, awaySummary=gameSummaryAway)
+	return render_template('gamereport.html', data=bigdata, homeSummary=gameSummaryHome, 
+							awaySummary=gameSummaryAway, periodSummary=periodSummary,
+							awayPeriodSum=awayPeriodSummary)
 
 @app.route('/saveGame')
 def saveGame():

@@ -73,6 +73,44 @@
 		</tr>
 	{% endfor %}
 </table>
+<h1>Home Team Period Summary Scoring Chances</h1>
+<table border="1" style="margin:auto">
+	<tr>
+		<td>Period</td>
+		<td colspan="2">Totals</td>
+		<td colspan="2">EV</td>
+		<td colspan="2">PP</td>
+		<td colspan="2">5v3 PP</td>
+		<td colspan="2">SH</td>
+		<td colspan="2">5v3 SH</td>
+	</tr>
+	{% for row in periodSummary %}
+		<tr>
+			{% for cell in row %}
+				<td>{{ cell }}</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+<h1>Away Team Period Summary Scoring Chances</h1>
+<table border="1" style="margin:auto">
+	<tr>
+		<td>Period</td>
+		<td colspan="2">Totals</td>
+		<td colspan="2">EV</td>
+		<td colspan="2">PP</td>
+		<td colspan="2">5v3 PP</td>
+		<td colspan="2">SH</td>
+		<td colspan="2">5v3 SH</td>
+	</tr>
+	{% for row in awayPeriodSum %}
+		<tr>
+			{% for cell in row %}
+				<td>{{ cell }}</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
 
 </div>
 

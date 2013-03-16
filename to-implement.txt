@@ -1,4 +1,7 @@
 Game Reports
+copy html to clipboard
+speed it up somehow?
+finish the comments to check if game id is valid
 
 Do we want user accounts?
 Better way to save game without mass deleting?

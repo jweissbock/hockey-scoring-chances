@@ -43,11 +43,8 @@ def about():
 @app.route('/gamereport/<int:gameid>')
 def gamereport(gameid):
 	# check if if game is valid or not
-
 	# check if gameid is even in existance in our database
 
-	# check if is a real game
-	# motivation: http://flamesnation.ca/2012/3/9/flames-scoring-chances-game-68-vs-winnipeg-jets
 	bigdata = []
 	try:
 		cur = g.db.execute('SELECT team,period,time,comment FROM chances WHERE gameid=? ORDER BY period, time DESC', 
@@ -60,8 +57,8 @@ def gamereport(gameid):
 	# get game events from scrape.getGameStates
 	# need to find a way to cache it
 	events = scrape.getGameStates(gameid)
-	# consider putting in dummy data until we are done building
 
+	# for the second/third tables
 	gameSummaryHome = {}
 	gameSummaryAway = {}
 
@@ -87,7 +84,8 @@ def gamereport(gameid):
 				away = len(awayNums)
 				state = str(home-1)+"v"+str(away-1)
 
-				# 3-4, 6-7, 9-10
+				# figures out what type of chance this is for each of the players
+				# based on state of the game and if home/away did the chance
 				if home == away:
 					if chance == 0:
 						cLocHome = 3
@@ -123,6 +121,7 @@ def gamereport(gameid):
 
 					gameSummaryAway[num][cLocAway] += 1
 
+				# adds data to the final-2 tables, sums of the totals
 				# we know the state, we know the period, we can add to the variable
 				if d[1] != tempPeriodSummary[0]:
 					# new period, reset tempPeriodSummary and append old
@@ -169,7 +168,7 @@ def gamereport(gameid):
 	periodSummary.append(tempPeriodSummary)
 
 	# awayPeriodSummary
-	awayPeriodSummary = list(periodSummary[:])
+	awayPeriodSummary = [x[:] for x in periodSummary]
 	for row in awayPeriodSummary:
 		row[1],row[2] = row[2],row[1]
 		row[3],row[4] = row[4],row[3]

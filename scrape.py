@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import urllib2
 import re
+import copy
 
 def getGamePlayerStats(homeTeam, awayTeam, gameId):
 	# will need a try/catch
@@ -12,10 +13,10 @@ def getGamePlayerStats(homeTeam, awayTeam, gameId):
 	the_page = response.read()
 	soup = BeautifulSoup(the_page)
 
-	rows = soup.findAll('td', 'tborder')[0].findAll("tr", attrs={'class' : re.compile("evenColor|oddColor")})
+	rows = soup.findAll('td', 'tborder')[2].findAll("tr", attrs={'class' : re.compile("evenColor|oddColor")})
 
 	numTimes = 0
-	team = awayTeam
+	team = copy.deepcopy(awayTeam)
 	counter = 0
 
 	for r in rows:
@@ -24,8 +25,8 @@ def getGamePlayerStats(homeTeam, awayTeam, gameId):
 		num = player[0].text
 		if num == 'TEAM TOTALS':
 			if numTimes == 0:
-				awayTeam = team
-				team = homeTeam
+				awayTeam = copy.deepcopy(team)
+				team = copy.deepcopy(homeTeam)
 			else: 
 				pass
 			numTimes += 1
@@ -37,7 +38,8 @@ def getGamePlayerStats(homeTeam, awayTeam, gameId):
 			team[num][5] = player[12].text
 			team[num][8] = player[13].text
 
-	homeTeam = team
+	if len(rows) > 0:
+		homeTeam = copy.deepcopy(team)
 
 	return [homeTeam, awayTeam]
 

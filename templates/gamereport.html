@@ -2,13 +2,23 @@
 <html lang="en">
    <head>
       <title>Hockey Scoring Chances - Web Tracker</title>
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="{{ url_for('static', filename='javascript/jquery.zclip.min.js') }}" type="text/javascript" charset="utf-8" async defer></script>
+      <script type="text/javascript">
+      	$(document).ready(function() {
+      		$('#chanceSummary').zclip({
+        		path:'/static/javascript/ZeroClipboard.swf',
+        		copy:$("#table1").html()
+    		});
+      	});
+      </script>
     </head>
     <body>
 
 <div style="text-align: center">
 
 <h1>Scoring Chance Summary</h1>
-
+<div id="table1">
 <table id="hscsummary" style="margin:auto; border: 1px black solid" border="1">
 	<tr>
 		<td>Team</td>
@@ -26,7 +36,11 @@
 		{% endfor %}
 		</tr>
 	{% endfor %}
-</table>
+</table></div>
+
+<div style="margin: 1em"><input type="button" id="chanceSummary" value="Copy 'Chance Summary' HTML to Clipboard" /></div>
+
+<div id="table2">
 <h1>Home Team Player Summary</h1>
 <table border="1" style="margin:auto">
 	<tr>
@@ -50,6 +64,11 @@
 		</tr>
 	{% endfor %}
 </table>
+</div>
+
+<div style="margin: 1em"><input type="button" id="homePlayerSummary" value="Copy 'Home Players' HTML to Clipboard" /></div>
+
+<div id="table3">
 <h1>Away Player Scoring Summary</h1>
 <table border="1" style="margin:auto">
 	<tr>
@@ -73,6 +92,11 @@
 		</tr>
 	{% endfor %}
 </table>
+</div>
+
+<div style="margin: 1em"><input type="button" id="awayPlayerSummary" value="Copy 'Away Players' HTML to Clipboard" /></div>
+
+<div id="table4">
 <h1>Home Team Period Summary Scoring Chances</h1>
 <table border="1" style="margin:auto">
 	<tr>
@@ -92,6 +116,11 @@
 		</tr>
 	{% endfor %}
 </table>
+</div>
+
+<div style="margin: 1em"><input type="button" id="homePeriodSummary" value="Copy 'Home Period' HTML to Clipboard" /></div>
+
+<div id="table5">
 <h1>Away Team Period Summary Scoring Chances</h1>
 <table border="1" style="margin:auto">
 	<tr>
@@ -111,7 +140,11 @@
 		</tr>
 	{% endfor %}
 </table>
-
 </div>
+
+<div style="margin: 1em"><input type="button" id="awayPeriodSummary" value="Copy 'Away Period' HTML to Clipboard" /></div>
+</div>
+
+<textarea id="test"></textarea>
 
 </body>

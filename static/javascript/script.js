@@ -1,8 +1,12 @@
 $(document).ready(function() {
 	var counter = 1;
 	$("#hockeyRinkHome").click(function(e) {
+		var parentOffset = $(this).parent().offset(); 
+   		//or $(this).offset(); if you really just want the current element's offset
+   		var relX = e.pageX - parentOffset.left;
+   		var relY = e.pageY - parentOffset.top;
 		// add puck
-		var div = $("<div></div>").addClass("puck").offset({top: e.pageY, left: e.pageX});
+		var div = $("<div></div>").addClass("puck").offset({top: relY, left: relX});
 		div.attr('name', counter).text(counter);
 		$(this).append(div);
 		// add table row 
@@ -11,8 +15,11 @@ $(document).ready(function() {
 	});
 	
 	$("#hockeyRinkAway").click(function(e) {
+   		//or $(this).offset(); if you really just want the current element's offset
+   		var relX = e.pageX - this.offsetLeft;
+   		var relY = e.pageY - this.offsetTop;
 		// add the puck
-		var div = $("<div></div>").addClass("puck").offset({top: e.pageY, left: e.pageX});
+		var div = $("<div></div>").addClass("puck").offset({top: relY, left: relX});
 		div.attr('name', counter).css('background', 'blue').css('color', 'white').text(counter);
 		$(this).append(div);
 		// add the table row

@@ -5,6 +5,7 @@ from urllib2 import urlopen
 from contextlib import closing
 import re, json, sqlite3
 import scrape
+from werkzeug.contrib.cache import SimpleCache
 
 DATABASE = 'hsc.db'
 DEBUG = True
@@ -42,21 +43,28 @@ def about():
 
 @app.route('/gamereport/<int:gameid>')
 def gamereport(gameid):
-	# check if if game is valid or not
-	# check if gameid is even in existance in our database
-
+	cache = SimpleCache()
 	bigdata = []
 	try:
 		cur = g.db.execute('SELECT team,period,time,comment FROM chances WHERE gameid=? ORDER BY period, time DESC', 
 						[gameid])
 		bigdata = [list(row) for row in cur.fetchall()]
 	except:
-		# need a better error
-		pass
+		# failed to load, quit
+		app.logger.error('Unable to load data for game '+str(gameid))
+		return 'Unable to load game data for this game'
+		
+
+	# if nothing in bigdata now we dont have anything on this team so we abort
+	if len(bigdata) == 0:
+		abort(404)
 
 	# get game events from scrape.getGameStates
 	# need to find a way to cache it
-	events = scrape.getGameStates(gameid)
+	events = cache.get('events'+str(gameid))
+	if events is None:
+		events = scrape.getGameStates(gameid)
+		cache.set('events'+str(gameid), events, timeout=60*60*24)
 
 	# for the second/third tables
 	gameSummaryHome = {}
@@ -155,7 +163,10 @@ def gamereport(gameid):
 				count = count + 1
 
 	# pass dictionaries to get all info
-	getPlayerInfo = scrape.getGamePlayerStats(gameSummaryHome, gameSummaryAway, gameid)
+	getPlayerInfo = cache.get('getPlayerInfo'+str(gameid))
+	if getPlayerInfo is None:
+		getPlayerInfo = scrape.getGamePlayerStats(gameSummaryHome, gameSummaryAway, gameid)
+		cache.set('getPlayerInfo'+str(gameid), getPlayerInfo, timeout=60*60*24)
 
 	gameSummaryHome = [getPlayerInfo[0][x] for x in getPlayerInfo[0]]
 	gameSummaryHome.sort(key = lambda row : int(row[0]))

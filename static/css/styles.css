@@ -56,11 +56,13 @@ table {
 
 #hockeyRinkHome{
 	background-image: url('/static/images/rink.jpg');
+	position: relative;
 	height: 382px;
 }
 
 #hockeyRinkAway {
 	background-image: url('/static/images/rink.jpg');
+	position: relative;
 	height: 382px;
 }
 

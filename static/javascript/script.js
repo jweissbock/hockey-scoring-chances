@@ -45,7 +45,7 @@ $(document).ready(function() {
 	});
 
 	$("#saveChances").on('click', function(e) {
-		$.jGrowl("Saving...")
+		$.jGrowl("Attempting to save, wait for confirmation...")
 		var data = {};
 		data['gameID'] = $("#sGameID").val();
 		data['gameYear'] = $("#gYear").val();
@@ -59,8 +59,8 @@ $(document).ready(function() {
 			data[puckName+'period'] = $("tr[name="+puckCounter+"]").find(".period").val();
 			data[puckName+'time'] = parseInt($("tr[name="+puckCounter+"]").find(".pMin").val())*60 + parseInt($("tr[name="+puckCounter+"]").find(".pSec").val());
 			data[puckName+'comment'] = $("tr[name="+puckCounter+"]").find(".comment").val();
-			data[puckName+'left'] = position.left;
-			data[puckName+'top'] = position.top;
+			data[puckName+'left'] = Math.floor(position.left);
+			data[puckName+'top'] = Math.floor(position.top);
 			puckNum++;
 		});
 		// now we have the data, need to ajax it

@@ -57,7 +57,7 @@ def gamereport(gameid):
 
 	# if nothing in bigdata now we dont have anything on this team so we abort
 	if len(bigdata) == 0:
-		abort(404)
+		return 'Unable to find any game data for this game'
 
 	# get game events from scrape.getGameStates
 	# need to find a way to cache it

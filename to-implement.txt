@@ -1,6 +1,17 @@
+Next up to do:
+- save data to POST
+- fix save data
+- refactor the save ajax backend
+- canvas in the front end with fiddle xY9bM
+- error with placing on screen different for everyone
+
 Game Reports
 copy html to clipboard
-speed it up somehow?
+speed it up somehow? cache?
+
+Image creation of shot charts
+	use canvas instead of div layers?
+url to directly go to modify game?
 
 Do we want user accounts?
 Better way to save game without mass deleting?

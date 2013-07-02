@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import urllib2
 import re
-import copy, logging
+import copy, logging, requests
 
 def getGamePlayerStats(homeTeam, awayTeam, gameId):
 	# try to open the url so we can get the html and parse it
@@ -12,7 +12,7 @@ def getGamePlayerStats(homeTeam, awayTeam, gameId):
 		response = urllib2.urlopen(request)
 
 		the_page = response.read()
-		soup = BeautifulSoup(the_page)
+		soup = BeautifulSoup(the_page, 'html.parser')
 	except:
 		logging.error('Failed to load '+url)
 
@@ -53,11 +53,9 @@ def getGamePlayerStats(homeTeam, awayTeam, gameId):
 def getGameStates(gameid):
 	url = "http://www.nhl.com/scores/htmlreports/20122013/PL0"+str(gameid)+".HTM"
 
-	request = urllib2.Request(url)
-	response = urllib2.urlopen(request)
-
-	the_page = response.read()
-	soup = BeautifulSoup(the_page)
+	r = requests.get(url)
+	the_page = r.text
+	soup = BeautifulSoup(the_page, 'html.parser') 
 
 	rows = soup.findAll("tr", "evenColor")
 

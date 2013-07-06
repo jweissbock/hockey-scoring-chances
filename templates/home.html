@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-   <head>
-      <title>Hockey Scoring Chances - Web Tracker</title>
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.jgrowl.css') }}">
-
-	  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	  <script type="text/javascript" src="{{ url_for('static', filename='javascript/jquery.growl.js') }}"></script>
-      <script src="{{ url_for('static', filename='javascript/script.js') }}" type="text/javascript" charset="utf-8" async defer></script>
-   </head>
-   <body>
+{% extends "layout.html" %}
+{% block content %}
    		<div id="gameInfo">
 			<select id="gYear">
 				<option value="20122013">2012-2013</option>
@@ -37,5 +27,4 @@
 				<input type="button" id="gameReport" value=" Game Report " />
 			</div>
 		</div>
-   </body>
-</html>
+{% endblock %}

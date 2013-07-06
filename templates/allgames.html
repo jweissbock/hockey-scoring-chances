@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h>All Games</h2>
+  <p>Here we have all games list.<br /><br /></p>
+  <p>
+  <ul>
+  	{% for d in alldata %}
+  		<li>Game ID: {{ d[1] }}, Num Recorded Chances: {{ d[0] }} | <a href="{{ url_for('gamereport', gameid=d[1]) }}">Report</a> | Edit Chances</li>
+  	{% else %}
+  		<li>No games saved, yet</li>
+  	{% endfor %}
+  </ul>
+	</p>
+{% endblock %}

@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Flask</title>
-    <strong><link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"></strong>
+      <title>Hockey Scoring Chances - Web Tracker</title>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.jgrowl.css') }}">
+
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='javascript/jquery.growl.js') }}"></script>
+      <script src="{{ url_for('static', filename='javascript/script.js') }}" type="text/javascript" charset="utf-8" async defer></script>
+      <strong><link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"></strong>
   </head>
   <body>
     <header>
       <div class="container">
-        <h1 class="logo">Flask App</h1>
+        <h1 class="logo">Hockey Scoring Chances</h1>
  	<nav>
 	  <ul class="menu">
 	    <li><a href="{{ url_for('home') }}">Home</a></li>
 	    <li><a href="{{ url_for('about') }}">About</a></li>
+      <li><a href="{{ url_for('allgames') }}">All Games</a></li>
 	  </ul>
 	</nav>
       </div>

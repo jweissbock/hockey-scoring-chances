@@ -41,6 +41,17 @@ def home():
 def about():
   return render_template('about.html')
 
+@app.route('/allgames')
+def allgames():
+	cur = g.db.execute('SELECT count(*) as numchances, gameid FROM chances GROUP BY gameid ORDER BY gameid DESC')
+	bigdata = [list(row) for row in cur.fetchall()]
+	#output = ""
+	#for data in bigdata:
+	#	output += "Game ID: %s, Num Recorded Chances: %s | Report | Edit Chances" % (data[1], data[0])
+	#return 'Here\'s a list of all the games.<br /><br />'+output
+	#print bigdata
+	return render_template('allgames.html', alldata=bigdata)
+
 @app.route('/gamereport/<int:gameid>')
 def gamereport(gameid):
 	cache = SimpleCache()

@@ -5,7 +5,7 @@
   <p>
   <ul>
   	{% for d in alldata %}
-  		<li>Game ID: {{ d[1] }}, Num Recorded Chances: {{ d[0] }} | <a href="{{ url_for('gamereport', gameid=d[1]) }}">Report</a> | Edit Chances</li>
+  		<li>Game ID: {{ d[1] }}, Num Recorded Chances: {{ d[0] }} | <a href="{{ url_for('gamereport', gameid=d[1]) }}">Report</a> | <a href="/?gameid={{ d[1] }}">Edit Chances</a></li>
   	{% else %}
   		<li>No games saved, yet</li>
   	{% endfor %}

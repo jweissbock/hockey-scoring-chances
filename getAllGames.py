@@ -68,6 +68,7 @@ def pbpinsert(gameid):
 		except Exception, err:
 			print "FAILED TO INSERT: ",
 			print str(err)
+			print newPBPdata
 			pass
 
 	return -1

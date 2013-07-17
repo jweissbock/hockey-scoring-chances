@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, session, g, redirect, url_for
 	 abort, flash
 from urllib2 import urlopen
 from contextlib import closing
+from bs4 import BeautifulSoup
 import re, json, sqlite3
 import scrape
 from werkzeug.contrib.cache import SimpleCache

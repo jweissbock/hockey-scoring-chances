@@ -5,6 +5,7 @@ myDB = sqlite3.connect('hsc.db')
 
 def pbpinsert(gameid):
 	# redo game id, split and calculate
+	gid = gameid
 	year = str(gameid)[:4]+str(int(str(gameid)[:4])+1)
 	gameid = str(gameid)[5:]
 
@@ -26,7 +27,6 @@ def pbpinsert(gameid):
 
 	for r in rows:
 		cells = r.findAll("td")
-		gid = gameid
 		gnumber = int(cells[0].text)
 
 		time = cells[3].text

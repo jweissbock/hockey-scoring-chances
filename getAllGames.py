@@ -9,7 +9,7 @@ def pbpinsert(gameid):
 	year = str(gameid)[:4]+str(int(str(gameid)[:4])+1)
 	gameid = str(gameid)[5:]
 
-	cur = myDB.execute('SELECT id FROM pbp WHERE gid=?', [gameid])
+	cur = myDB.execute('SELECT id FROM pbp WHERE gid=?', [gid])
 	fetchd = cur.fetchone()
 	if fetchd is not None:
 		return gameid

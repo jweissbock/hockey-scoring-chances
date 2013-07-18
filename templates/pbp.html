@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h>Play-by-Play Database</h2>
+  <p>I've taken all the data from the play by play sheets the NHL releases and put them in an easily searchable database.  Enter a gameid, period and time and find the last known players on the ice.<br /><br />
+  <p style="margin-top: 1em; margin-bottom: 1em ">
+    <table style="margin: auto">
+      <tr>
+        <td>Game Year:</td>
+        <td>Game ID:</td>
+        <td>Period: </td>
+        <td>Time: </td>
+      </tr>
+      <tr>
+        <td><select></select></td>
+        <td><input type=text name=gameid></td>
+        <td><select></select></td>
+        <td><input type=text name=time value="00:00" /></td>
+      </tr>
+      <tr>
+        <td colspan="4" style="text-align: center">
+          <input type="button" value="Get Players">
+        </td>
+      </tr>
+    </table>
+  </p><br /><br /> 
+  <p>If you think the database is giving you wrong results, you want to get a .csv copy of the database, want to know how to use the API for your site, or the database is missing a game, contact me at @joshweissbock or at josh [dot] weissbock [@] gmail [dot] com.
+	</p><br /><br />
+{% endblock %}

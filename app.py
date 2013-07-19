@@ -48,11 +48,10 @@ def pbp():
 		period = request.form['period']
 		time = request.form['time']
 
-		foo = time[:2]
-		bar = time[3:5]
+		mins = time[:2]
+		secs = time[3:5]
 
 		# check if gid is in db
-		# check if time is under 1200s
 		# send back the old values to the form
 
 		if not gyear.isdigit() or int(gyear) not in range(2007, 2013):
@@ -63,7 +62,7 @@ def pbp():
 			message = "Period is not valid."
 		elif not re.match(r'^\d\d:\d\d$', time):
 			message = "Time is not in valid format"
-		elif int(foo)*60 + int(bar) > 1200: 
+		elif int(mins)*60 + int(secs) > 1200: 
 			message = "Time is too high."
 		else:
 			message = "Trying to find the items."

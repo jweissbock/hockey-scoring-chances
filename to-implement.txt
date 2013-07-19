@@ -5,13 +5,28 @@ Next up to do:
 - canvas in the front end with fiddle xY9bM
 - error with placing on screen different for everyone
 
+- add 'was a goal' in entering scoring chances
+
 Game Reports
 copy html to clipboard
 speed it up somehow? cache?
+guys from bolts statistics want expanded game reports over multiple states
+
+- make db to search across multiple datas.  i.e. across players, states, teams over n games
 
 Image creation of shot charts
 	use canvas instead of div layers?
 url to directly go to modify game?
+
+framework stuff
+---------------
+- db php time to integer
+- remove db pbp timeup
+- try sql alchemy
+- use mysql
+	sareon$hsc
+	hscpassword
+- wtf-forms
 
 Do we want user accounts?
 Better way to save game without mass deleting?

@@ -38,9 +38,37 @@ def teardown_request(exception):
 def home():
   return render_template('home.html')
 
-@app.route('/pBp')
+@app.route('/pbp', methods=['GET', 'POST'])
 def pbp():
-	return render_template('pbp.html')
+	message = None
+	if request.method == 'POST':
+		gyear = request.form['gyear']
+		gid = request.form['gameid']
+		gameid = str(gyear) + '0' + str(gid)
+		period = request.form['period']
+		time = request.form['time']
+
+		foo = time[:2]
+		bar = time[3:5]
+
+		# check if gid is in db
+		# check if time is under 1200s
+		# send back the old values to the form
+
+		if not gyear.isdigit() or int(gyear) not in range(2007, 2013):
+			message = "Game year is not valid."
+		elif not gid.isdigit() or len(gid) != 5:
+			message = "Game ID is not valid."
+		elif period not in ['1','2','3', '4']:
+			message = "Period is not valid."
+		elif not re.match(r'^\d\d:\d\d$', time):
+			message = "Time is not in valid format"
+		elif int(foo)*60 + int(bar) > 1200: 
+			message = "Time is too high."
+		else:
+			message = "Trying to find the items."
+	# SELECT * FROM pbp WHERE cast(timedown as integer) >= 1166 AND gid=30151 AND period = 1 ORDER BY gnumber DESC LIMIT 1;
+	return render_template('pbp.html', error=message)
 
 @app.route('/about')
 def about():

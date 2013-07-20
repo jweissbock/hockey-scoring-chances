@@ -38,9 +38,17 @@ def teardown_request(exception):
 def home():
   return render_template('home.html')
 
+# todo for this function
+#	+ send old values to form
+# 	+ remove negative player numbers
+#	+ adjust for OT2,3...
+#	+ adjust for querying an OT that doesnt exist
+#	+ make into ajax / API
+#	+ prettier box to report numbers.
 @app.route('/pbp', methods=['GET', 'POST'])
 def pbp():
 	message = None
+	teams = None
 	if request.method == 'POST':
 		gyear = request.form['gyear']
 		gid = request.form['gameid']
@@ -52,12 +60,14 @@ def pbp():
 		secs = time[3:5]
 
 		# check if gid is in db
-		# send back the old values to the form
+		cur = g.db.execute('SELECT * FROM pbp WHERE gid=?', [gameid])
 
 		if not gyear.isdigit() or int(gyear) not in range(2007, 2013):
 			message = "Game year is not valid."
 		elif not gid.isdigit() or len(gid) != 5:
 			message = "Game ID is not valid."
+		elif cur.fetchone() is None:
+			message = "This game id does not exist in our database."
 		elif period not in ['1','2','3', '4']:
 			message = "Period is not valid."
 		elif not re.match(r'^\d\d:\d\d$', time):
@@ -65,9 +75,17 @@ def pbp():
 		elif int(mins)*60 + int(secs) > 1200: 
 			message = "Time is too high."
 		else:
-			message = "Trying to find the items."
-	# SELECT * FROM pbp WHERE cast(timedown as integer) >= 1166 AND gid=30151 AND period = 1 ORDER BY gnumber DESC LIMIT 1;
-	return render_template('pbp.html', error=message)
+			# SELECT * FROM pbp WHERE cast(timedown as integer) >= 1166 AND gid=30151 AND period = 1 ORDER BY gnumber DESC LIMIT 1;
+			sql = "SELECT * FROM pbp WHERE cast(timedown as integer) >= ? AND gid=? AND period = ? ORDER BY gnumber DESC LIMIT 1"
+			params = (int(mins)*60 + int(secs), int(gameid), int(period))
+			cur = g.db.execute(sql, params)
+			fetchd = cur.fetchone()
+			awayTeam = [fetchd[8], fetchd[9], fetchd[10], fetchd[11], fetchd[12], fetchd[13]]
+			homeTeam = [fetchd[14], fetchd[15], fetchd[16], fetchd[17], fetchd[18], fetchd[19]]
+			teams = ["",""]
+			teams[0] = ', '.join([str(x) for x in awayTeam])
+			teams[1] = ', '.join([str(x) for x in homeTeam])
+	return render_template('pbp.html', error=message, teams=teams)
 
 @app.route('/about')
 def about():

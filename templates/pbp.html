@@ -36,6 +36,18 @@
     </table>
   </form>
   </p><br /><br /> 
+  {% if teams %}
+    <table style="text-align: left; margin: auto;">
+      <tr>
+        <td>Visiting Team: </td>
+        <td> {{ teams[0] }}</td>
+      </tr>
+      <tr>
+        <td>Home Team: </td>
+        <td>{{ teams[1] }}</td>
+      </tr>
+    </table><br /><br />
+  {% endif %}
   <p>If you think the database is giving you wrong results, you want to get a .csv copy of the database, want to know how to use the API for your site, or the database is missing a game, contact me at @joshweissbock or at josh [dot] weissbock [@] gmail [dot] com.
 	</p><br /><br />
 {% endblock %}

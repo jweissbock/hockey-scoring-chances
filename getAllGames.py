@@ -1,10 +1,27 @@
-import requests, sqlite3, re
+import MySQLdb
+import sqlalchemy
+import sqlite3
+import requests, re
 from bs4 import BeautifulSoup
 
+engine = sqlalchemy.create_engine('mysql://root:password@localhost/hsc')
 myDB = sqlite3.connect('hsc.db')
+
+def insertMysql():
+	cur = myDB.execute("SELECT * FROM pbp")
+
+	print "trying to insert"
+
+	for i in cur:
+		sql = "INSERT INTO pbp (gid, gnumber, period, timeup, timedown, event, description, v1, v2, v3, v4, v5, v6, h1, h2, h3, h4, h5, h6) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" 
+		values = list(i)[1:]
+		engine.execute(sql, values)
+
+	print "finished inserting all values"
 
 # need to redo 2012030161
 # need to deal with more players on ice
+# need to swithc to time on ice sheets
 
 def pbpinsert(gameid):
 	# redo game id, split and calculate

@@ -41,6 +41,8 @@ def home():
 # todo for this function
 #	+ send old values to form
 # 	+ remove negative player numbers
+#	+ get names of players instead of numbers
+#	+ get name of teams instead of home/away
 #	+ adjust for OT2,3...
 #	+ adjust for querying an OT that doesnt exist
 #	+ make into ajax / API
@@ -80,8 +82,15 @@ def pbp():
 			params = (int(mins)*60 + int(secs), int(gameid), int(period))
 			cur = g.db.execute(sql, params)
 			fetchd = cur.fetchone()
+			# turn fetchd into a list, do stuff easier here
 			awayTeam = [fetchd[8], fetchd[9], fetchd[10], fetchd[11], fetchd[12], fetchd[13]]
 			homeTeam = [fetchd[14], fetchd[15], fetchd[16], fetchd[17], fetchd[18], fetchd[19]]
+			if -1 in awayTeam:
+				awayTeam = list(set(awayTeam))
+				awayTeam = awayTeam.remove(-1)
+			if -1 in homeTeam:
+				homeTeam = list(set(homeTeam))
+				homeTeam = homeTeam.remove(-1)
 			teams = ["",""]
 			teams[0] = ', '.join([str(x) for x in awayTeam])
 			teams[1] = ', '.join([str(x) for x in homeTeam])
@@ -97,6 +106,7 @@ def allgames():
 	bigdata = [list(row) for row in cur.fetchall()]
 	return render_template('allgames.html', alldata=bigdata)
 
+#http://www.reddit.com/r/learnpython/comments/1bie5m/new_to_python_flask_web_development_how_can_i/
 @app.route('/gamereport/<int:gameid>')
 def gamereport(gameid):
 	cache = SimpleCache()

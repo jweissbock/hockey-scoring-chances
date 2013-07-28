@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, session, g, redirect, url_for
 from urllib2 import urlopen
 from contextlib import closing
 from bs4 import BeautifulSoup
-import re, json, sqlite3
+import re, json, sqlite3, MySQLdb, sqlalchemy
 import scrape
 from werkzeug.contrib.cache import SimpleCache
 
@@ -39,7 +39,7 @@ def home():
   return render_template('home.html')
 
 # todo for this function
-#	+ send old values to form
+#	+ send old values to form (use wtf-forms)
 # 	+ remove negative player numbers
 #	+ get names of players instead of numbers
 #	+ get name of teams instead of home/away
@@ -62,7 +62,8 @@ def pbp():
 		secs = time[3:5]
 
 		# check if gid is in db
-		cur = g.db.execute('SELECT * FROM pbp WHERE gid=?', [gameid])
+		engine = sqlalchemy.create_engine('mysql://root:password@localhost/hsc')
+		cur = engine.execute('SELECT * FROM pbp WHERE gid=%s', [gameid])
 
 		if not gyear.isdigit() or int(gyear) not in range(2007, 2013):
 			message = "Game year is not valid."

@@ -79,9 +79,9 @@ def pbp():
 			message = "Time is too high."
 		else:
 			# SELECT * FROM pbp WHERE cast(timedown as integer) >= 1166 AND gid=30151 AND period = 1 ORDER BY gnumber DESC LIMIT 1;
-			sql = "SELECT * FROM pbp WHERE cast(timedown as integer) >= ? AND gid=? AND period = ? ORDER BY gnumber DESC LIMIT 1"
-			params = (int(mins)*60 + int(secs), int(gameid), int(period))
-			cur = g.db.execute(sql, params)
+			sql = "SELECT * FROM pbp WHERE timedown >= %s AND gid=%s AND period = %s ORDER BY gnumber DESC LIMIT 1"
+			params = [int(mins)*60 + int(secs), int(gameid), int(period)]
+			cur = engine.execute(sql, params)
 			fetchd = cur.fetchone()
 			# turn fetchd into a list, do stuff easier here
 			awayTeam = [fetchd[8], fetchd[9], fetchd[10], fetchd[11], fetchd[12], fetchd[13]]

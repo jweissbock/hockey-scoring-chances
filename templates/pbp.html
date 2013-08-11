@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
-  <h>Play-by-Play Database</h2>
-  <p>I've taken all the data from the play by play sheets the NHL releases and put them in an easily searchable database.  Enter a gameid, period and time and find the last known players on the ice.<br /><br />
+  <h>Time on IceDatabase</h2>
+  <p>I've taken all the data from the TOI sheets the NHL releases and put them in an easily searchable database.  Enter a gameid, period and time and find the last known players on the ice.  This used to be based on play-by-play data, contact Josh if you're interested in that<br /><br />
     {% if error %}<p class=error><strong>Error: </strong>{{ error }}</p>{% endif %}
     <form action="{{ url_for('pbp') }}" method="post">
   <p style="margin-top: 1em; margin-bottom: 1em ">
@@ -10,7 +10,7 @@
         <td>Game Year:</td>
         <td>5 digit Game ID:</td>
         <td>Period: </td>
-        <td>Time (down): </td>
+        <td>Time remaining: </td>
       </tr>
       <tr>
         <td><select name="gyear">
@@ -36,15 +36,15 @@
     </table>
   </form>
   </p><br /><br /> 
-  {% if teams %}
-    <table style="text-align: left; margin: auto;">
+  {% if team1 %}
+    <table style="text-align: left; margin: auto; width: 50%">
       <tr>
-        <td>Visiting Team: </td>
-        <td> {{ teams[0] }}</td>
+        <td>{{ team1 }}: </td>
+        <td> {{ team1roster|safe }}<br /></td>
       </tr>
       <tr>
-        <td>Home Team: </td>
-        <td>{{ teams[1] }}</td>
+        <td>{{ team2 }} </td>
+        <td>{{ team2roster|safe }}</td>
       </tr>
     </table><br /><br />
   {% endif %}

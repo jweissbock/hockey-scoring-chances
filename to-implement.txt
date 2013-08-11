@@ -14,6 +14,19 @@ guys from bolts statistics want expanded game reports over multiple states
 
 - make db to search across multiple datas.  i.e. across players, states, teams over n games
 
+- move app to all mysql
+- redo game reports to get from database (vs scraping)
+	-> migrate all data from .sql to mysql
+- auto save the chances
+
+- scraper TOI data
+	-> requires tables for players and for shifts
+
+- fix the css with the moving around of pucks
+
+- figure a way to prevent people from deleting data?
+
+
 Image creation of shot charts
 	use canvas instead of div layers?
 url to directly go to modify game?

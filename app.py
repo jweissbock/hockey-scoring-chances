@@ -8,7 +8,7 @@ import re, json, sqlite3, MySQLdb, sqlalchemy
 import scrape
 from werkzeug.contrib.cache import SimpleCache
 
-DATABASE = 'hsc.db'
+#DATABASE = 'hsc.db'
 DEBUG = True
 SECRET_KEY = 'I Love Don Cherry'
 USERNAME = 'admin'
@@ -18,13 +18,11 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 def connect_db():
-	return sqlite3.connect(app.config['DATABASE'])
+	return sqlalchemy.create_engine('mysql://root:password@localhost/hsc')
 
+# need a new function dealing with initializing database from schema
 def init_db():
-	with closing(connect_db()) as db:
-		with app.open_resource('schema.sql') as f:
-			db.cursor().executescript(f.read())
-		db.commit()
+	pass
 
 @app.before_request
 def before_request():
@@ -32,13 +30,14 @@ def before_request():
 
 @app.teardown_request
 def teardown_request(exception):
-	g.db.close()
+	g.db.dispose()
 
 @app.route('/')
 def home():
   return render_template('home.html')
 
 # todo for this function
+#	+ can enter 3 digit times
 #	+ send old values to form (use wtf-forms)
 # 	+ remove negative player numbers
 #	+ get names of players instead of numbers
@@ -47,10 +46,14 @@ def home():
 #	+ adjust for querying an OT that doesnt exist
 #	+ make into ajax / API
 #	+ prettier box to report numbers.
+@app.route('/toi', methods=['GET', 'POST'])
 @app.route('/pbp', methods=['GET', 'POST'])
 def pbp():
+	team1 = None
+	team1roster = []
+	team2 = None
+	team2roster = []
 	message = None
-	teams = None
 	if request.method == 'POST':
 		gyear = request.form['gyear']
 		gid = request.form['gameid']
@@ -62,8 +65,7 @@ def pbp():
 		secs = time[3:5]
 
 		# check if gid is in db
-		engine = sqlalchemy.create_engine('mysql://root:password@localhost/hsc')
-		cur = engine.execute('SELECT * FROM pbp WHERE gid=%s', [gameid])
+		cur = g.db.execute('SELECT * FROM shifts WHERE gameid=%s', [gameid])
 
 		if not gyear.isdigit() or int(gyear) not in range(2007, 2013):
 			message = "Game year is not valid."
@@ -79,23 +81,31 @@ def pbp():
 			message = "Time is too high."
 		else:
 			# SELECT * FROM pbp WHERE cast(timedown as integer) >= 1166 AND gid=30151 AND period = 1 ORDER BY gnumber DESC LIMIT 1;
-			sql = "SELECT * FROM pbp WHERE timedown >= %s AND gid=%s AND period = %s ORDER BY gnumber DESC LIMIT 1"
-			params = [int(mins)*60 + int(secs), int(gameid), int(period)]
-			cur = engine.execute(sql, params)
-			fetchd = cur.fetchone()
-			# turn fetchd into a list, do stuff easier here
-			awayTeam = [fetchd[8], fetchd[9], fetchd[10], fetchd[11], fetchd[12], fetchd[13]]
-			homeTeam = [fetchd[14], fetchd[15], fetchd[16], fetchd[17], fetchd[18], fetchd[19]]
-			if -1 in awayTeam:
-				awayTeam = list(set(awayTeam))
-				awayTeam = awayTeam.remove(-1)
-			if -1 in homeTeam:
-				homeTeam = list(set(homeTeam))
-				homeTeam = homeTeam.remove(-1)
-			teams = ["",""]
-			teams[0] = ', '.join([str(x) for x in awayTeam])
-			teams[1] = ', '.join([str(x) for x in homeTeam])
-	return render_template('pbp.html', error=message, teams=teams)
+			# SELECT * FROM shifts WHERE gameid = 2012020123 AND shift_start >= 1000 AND shift_end < 1000 AND period = 2 ORDER BY playerteamname, playernumber+0;
+			sql = "SELECT * FROM shifts WHERE gameid = %s AND shift_start >= %s AND shift_end < %s AND period = %s ORDER BY playerteamname, playernumber+0"
+			queryGameID = int(mins)*60 + int(secs)
+			params = [int(gameid), queryGameID, queryGameID, int(period)]
+			cur = g.db.execute(sql, params)
+			fetchd = cur.fetchall()
+			if fetchd != []:
+				# turn fetchd into a list, do stuff easier here
+				team1 = fetchd[0][5]
+				team2 = ""
+				for player in fetchd:
+						if player[5] == team1:
+							team1roster.append(player[3])
+						else:
+							team2roster.append(player[3])
+							team2 = player[5].title()
+				# make fancy lists
+				team1 = team1.title()
+				team1roster = ' <br />'.join(team1roster)
+				team2roster = ' <br />'.join(team2roster)
+			else:
+				message = "Nothing found for these values"
+	return render_template('pbp.html', team1=team1, team2=team2,
+							team1roster=team1roster, team2roster=team2roster,
+							error = message)
 
 @app.route('/about')
 def about():
@@ -113,7 +123,7 @@ def gamereport(gameid):
 	cache = SimpleCache()
 	bigdata = []
 	try:
-		cur = g.db.execute('SELECT team,period,time,comment FROM chances WHERE gameid=? ORDER BY period, time DESC', 
+		cur = g.db.execute('SELECT team,period,time,comment FROM chances WHERE gameid=%s ORDER BY period, time DESC', 
 						[gameid])
 		bigdata = [list(row) for row in cur.fetchall()]
 	except:
@@ -331,12 +341,10 @@ def saveGame():
 	# delete all events from game ID and save all new ones for now
 	#g.db.execute('BEGIN TRANSACTION')
 	try:
-		g.db.execute('DELETE FROM chances WHERE gameid = ?', [gameID])
-		g.db.commit()
+		g.db.execute('DELETE FROM chances WHERE gameid = %s', [gameID])
 		for p in pucks:
-			g.db.execute('INSERT INTO chances (gameid, yearid, team, period, time, comment, posx, posy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+			g.db.execute('INSERT INTO chances (gameid, yearid, team, period, time, comment, posx, posy) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
 						[gameID, gameYear, p['team'], p['period'], p['time'], p['comment'], p['left'], p['top']])
-			g.db.commit()
 	except:
 		return json.dumps({ 'success' : False, 'msg' : 'Error in saving to database'})
 	#g.db.execute('COMMIT')
@@ -374,7 +382,7 @@ def getGame():
 	# get all puck data
 	pucks = []
 	try:
-		cur = g.db.execute('SELECT team, period, time, comment, posx, posy FROM chances WHERE gameid = ? AND yearid = ?', 
+		cur = g.db.execute('SELECT team, period, time, comment, posx, posy FROM chances WHERE gameid = %s AND yearid = %s', 
 							[gameID, gYear])
 		pucks = [dict(top=row[5], left=row[4], period=row[1], time=row[2], team=row[0], comment=row[3]) for row in cur.fetchall()]
 		getPucks = True

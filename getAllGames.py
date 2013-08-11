@@ -7,6 +7,18 @@ from bs4 import BeautifulSoup
 engine = sqlalchemy.create_engine('mysql://root:password@localhost/hsc')
 myDB = sqlite3.connect('hsc.db')
 
+def migratechances():
+	cur = myDB.execute("SELECT * FROM chances")
+
+	print "trying to insert"
+
+	for i in cur:
+		sql = "INSERT INTO chances (gameid, yearid, team, period, time, comment, posx, posy) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)" 
+		values = list(i)[1:]
+		engine.execute(sql, values)
+
+	print "finished inserting all values"
+
 def insertMysql():
 	cur = myDB.execute("SELECT * FROM pbp")
 

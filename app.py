@@ -36,25 +36,76 @@ def teardown_request(exception):
 def home():
   return render_template('home.html')
 
+# returns the api instructions
+@app.route('/toi/api/')
+def toiAPIInstructions():
+	return render_template('toi-instructions.html')
+
+@app.route('/toi/api/<int:urlgid>/<int:urlper>/<int:urltrem>')
+def toiapp(urlgid=None, urlper=None, urltrem=None):
+	# check if urlgid is a digit and 10 
+	error = True
+	message = "API"
+	team1 = []
+	team2 = []
+	team1name = "team1"
+	team2name = "team2"
+	if len(str(urlgid)) != 10:
+		message = "Not a valid game ID"
+	elif urlper not in range(1,7):
+		message = "Period is not valid"
+	elif urltrem not in range(0,1201):
+		message = "Time is not valid."
+	else:
+		# check if gameid is in db
+		# check if anything with selected data
+		# return what we have
+		sql = "SELECT * FROM shifts WHERE gameid = %s AND shift_start >= %s AND shift_end < %s AND period = %s ORDER BY playerteamname, playernumber+0"
+		params = [urlgid, urltrem, urltrem, urlper]
+		cur = g.db.execute(sql, params)
+		fetchd = cur.fetchall()
+		if fetchd != []:
+			# turn fetchd into a list, do stuff easier here
+			team1name = fetchd[0][5]
+			for player in fetchd:
+					if player[5] == team1name:
+						team1.append(player[3])
+					else:
+						team2.append(player[3])
+						team2name = player[5].title()
+			# make fancy lists
+			team1name = team1name.title()
+			error = False
+			message = "ACK"
+		else:
+			message = "Nothing found for these values"
+	return json.dumps({'error' : error, 'message' : message,
+						'team1name' : team1name, 'team2name' : team2name,
+						'team1' : team1, 'team2' : team2})
+
 # todo for this function
 #	+ can enter 3 digit times
 #	+ send old values to form (use wtf-forms)
-# 	+ remove negative player numbers
-#	+ get names of players instead of numbers
 #	+ get name of teams instead of home/away
 #	+ adjust for OT2,3...
 #	+ adjust for querying an OT that doesnt exist
 #	+ make into ajax / API
 #	+ prettier box to report numbers.
-@app.route('/toi', methods=['GET', 'POST'])
-@app.route('/pbp', methods=['GET', 'POST'])
-def pbp():
+@app.route('/toi/api/<int:urlgid>/<int:urlper>')
+@app.route('/toi/api/<int:urlgid>')
+@app.route('/toi/', methods=['GET', 'POST'])
+def toi(urlgid=None, urlper=None):
 	team1 = None
 	team1roster = []
 	team2 = None
 	team2roster = []
 	message = None
-	if request.method == 'POST':
+
+	gameidForm = ""
+	timeidForm = "20:00"
+	api = False
+
+	if request.method == 'POST' or api == True:
 		gyear = request.form['gyear']
 		gid = request.form['gameid']
 		gameid = str(gyear) + '0' + str(gid)
@@ -103,9 +154,11 @@ def pbp():
 				team2roster = ' <br />'.join(team2roster)
 			else:
 				message = "Nothing found for these values"
-	return render_template('pbp.html', team1=team1, team2=team2,
+		gameidForm = str(gid)
+		timeidForm = time
+	return render_template('toi.html', team1=team1, team2=team2,
 							team1roster=team1roster, team2roster=team2roster,
-							error = message)
+							error = message, gameid=gameidForm, timerem=timeidForm)
 
 @app.route('/about')
 def about():

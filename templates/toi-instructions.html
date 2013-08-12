@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h1>Time on Ice Database - API docs</h1>
+  <h2>Input</h2>
+  <p>You know how to use the form to search the TOI database, this is the API to search the database for your own apps.  All responses are in JSON.  To use the API simply go to <em>/toi/api/&lt;int:gameID&gt;/&lt;int:period&gt;/&lt;int:timeRemaining&gt;</em> and fill it in with the appopriate values.  <br /><br /></p>
+  <dl>
+    <dt>gameID: </dt>
+    <dd>This is the unique NHL identifier of each game, it takes the form of: yyyy0ddddd where the first four y's are the year and the last 5 d's are the unique game id, i.e. 2012020123<br /><br /></dd>
+    <dt>period</dt>
+    <dd>The number of the period.  i.e. 1st Period is 1, 3 Period is 3.  OT's continue with this trend i.e. 1OT is 4, 2OT is 5 etc.<br /><br /></dd>
+    <dt>timeRemaining</dt>
+    <dd>In seconds this is the number of seconds remaining, this value is between 0 and 1200.<br /><br /></dd>
+  </dl>
+  <p>Example: <a href="/toi/api/2012020123/3/1023">/toi/api/2012020123/3/1023</a><br /><br /></p>
+  <h2>Output</h2>
+  <p>There are six values in the JSON string that will be returned:</p>
+  <dl>
+    <dt>error: </dt>
+    <dd>This will either be true or false.  True if it the API was able to successfully return a value, otherwise it is false.  The last four variables only return a value if error is true.<br /><br /></dd>
+    <dt>message</dt>
+    <dd>Specifies why the API was not (or was) able to return a value.<br /><br /></dd>
+    <dt>team1name</dt>
+    <dd>The name of the first team.<br /><br /></dd>
+    <dt>team2name: </dt>
+    <dd>The name of the second team.<br /><br /></dd>
+    <dt>team1</dt>
+    <dd>The roster of the first team on the ice at this time. <br /><br /></dd>
+    <dt>team2</dt>
+    <dd>The roster of the second team on the ice at this time.<br /><br /></dd>
+  </dl>
+{% endblock %}

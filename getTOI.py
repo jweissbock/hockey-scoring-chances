@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 
 engine = sqlalchemy.create_engine('mysql://root:password@localhost/hsc')
 
+# redo 2012020124
+
 def getGameTOI(gameid):
 	# assume gameid in yyyy0ddddd
 	year = str(gameid)[:4]+str(int(str(gameid)[:4])+1)
@@ -14,7 +16,10 @@ def getGameTOI(gameid):
 	away = "http://www.nhl.com/scores/htmlreports/%s/TV0%s.HTM" % (year, digit)
 
 	for url in [home, away]:
-		parsePage(url, gameid)
+		try:
+			parsePage(url, gameid)
+		except:
+			pass
 
 def parsePage(url, gameid):
 	r = requests.get(url)

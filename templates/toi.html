@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-  <h>Time on Ice Database</h2>
+  <h2>Time on Ice Database</h2>
   <p>I've taken all the data from the TOI sheets the NHL releases and put them in an easily searchable database.  Enter a gameid, period and time and find the last known players on the ice.  This used to be based on play-by-play data, contact Josh if you're interested in that<br /><br />
     {% if error %}<p class=error><strong>Error: </strong>{{ error }}</p>{% endif %}
     <form action="{{ url_for('toi') }}" method="post">

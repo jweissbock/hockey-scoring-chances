@@ -36,6 +36,10 @@ def teardown_request(exception):
 def home():
   return render_template('home.html')
 
+@app.route('/pbp/')
+def pbp():
+	return render_template('pbp.html',gameid=20001)
+
 # returns the api instructions
 @app.route('/toi/api/')
 def toiAPIInstructions():

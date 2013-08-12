@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
-  <h>Time on IceDatabase</h2>
-  <p>I've taken all the data from the TOI sheets the NHL releases and put them in an easily searchable database.  Enter a gameid, period and time and find the last known players on the ice.  This used to be based on play-by-play data, contact Josh if you're interested in that<br /><br />
+  <h2>Play by Play Event Database</h2>
+  <p>[Place Holder]<br /><br />
     {% if error %}<p class=error><strong>Error: </strong>{{ error }}</p>{% endif %}
     <form action="{{ url_for('pbp') }}" method="post">
   <p style="margin-top: 1em; margin-bottom: 1em ">
@@ -9,8 +9,7 @@
       <tr>
         <td>Game Year:</td>
         <td>5 digit Game ID:</td>
-        <td>Period: </td>
-        <td>Time remaining: </td>
+        <td>Event: </td>
       </tr>
       <tr>
         <td><select name="gyear">
@@ -20,34 +19,18 @@
             <option value="2009">2009-2010</option>
             <option value="2008">2008-2009</option>
             <option value="2007">2007-2008</option></select></td>
-        <td><input type=text name=gameid maxlength="5"></td>
-        <td><select name="period">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">OT1</option></select></td>
-        <td><input type=text name=time value="20:00" maxlength="5" /></td>
+        <td><input type=text name=gameid value="{{ gameid }}" maxlength="5"></td>
+        <td><select name="event">
+            <option value="1">Zone Starts</option>
+            <option value="2">Penalties</option>
+            <option value="3">Shot Attempts</option></select></td>
       </tr>
       <tr>
-        <td colspan="4" style="text-align: center">
+        <td colspan="3" style="text-align: center">
           <input type="submit" value="Get Players">
         </td>
       </tr>
     </table>
   </form>
-  </p><br /><br /> 
-  {% if team1 %}
-    <table style="text-align: left; margin: auto; width: 50%">
-      <tr>
-        <td>{{ team1 }}: </td>
-        <td> {{ team1roster|safe }}<br /></td>
-      </tr>
-      <tr>
-        <td>{{ team2 }} </td>
-        <td>{{ team2roster|safe }}</td>
-      </tr>
-    </table><br /><br />
-  {% endif %}
-  <p>If you think the database is giving you wrong results, you want to get a .csv copy of the database, want to know how to use the API for your site, or the database is missing a game, contact me at @joshweissbock or at josh [dot] weissbock [@] gmail [dot] com.
-	</p><br /><br />
+  </p>
 {% endblock %}

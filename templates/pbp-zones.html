@@ -1,0 +1,30 @@
+<style type="text/css">
+	table, td {
+		border: 1px solid black;
+	}
+</style>
+
+<table cellpadding="2" cellspacing="2">
+	<tr>
+		<td>Period</td>
+		<td>Time (Elapsed)</td>
+		<td>Time Game Clock</td>
+		<td>Situation</td>
+		<td>State</td>
+		<td>Location</td>
+		<td>Visitors on-ice</td>
+		<td>Home on-ice</td>
+	</tr>
+	{% for row in table %}
+	<tr>
+		<td>{{ row[0] }}</td>
+		<td>{{ row[1] }}</td>
+		<td>{{ row[2] }}</td>
+		<td>{{ row[6] }}</td>
+		<td>{{ row[5] }}</td>
+		<td>{{ row[7] }}</td>
+		<td>{{ row[4] }}</td>
+		<td>{{ row[3] }}</td>
+	</tr>
+	{% endfor %}
+</table>

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
   <h2>Time on Ice Database</h2>
-  <p>I've taken all the data from the TOI sheets the NHL releases and put them in an easily searchable database.  Enter a gameid, period and time and find the last known players on the ice.  This used to be based on play-by-play data, contact Josh if you're interested in that<br /><br />
+  <p>I've taken all the data from the TOI sheets the NHL releases and put them in an easily searchable database.  Enter a gameid, period and time and find the last known players on the ice.  This used to be based on TOI data, contact Josh if you're interested in that<br /><br />
     {% if error %}<p class=error><strong>Error: </strong>{{ error }}</p>{% endif %}
     <form action="{{ url_for('toi') }}" method="post">
   <p style="margin-top: 1em; margin-bottom: 1em ">
@@ -25,7 +25,10 @@
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
-            <option value="4">OT1</option></select></td>
+            <option value="4">OT1</option></select>
+            <option value="5">OT2</option></select>
+            <option value="6">OT3</option></select>
+            <option value="7">OT4</option></select></td>
         <td><input type=text name=time value="{{ timerem }}" maxlength="5" /></td>
       </tr>
       <tr>

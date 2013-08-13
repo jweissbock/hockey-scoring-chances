@@ -36,9 +36,56 @@ def teardown_request(exception):
 def home():
   return render_template('home.html')
 
-@app.route('/pbp/')
+@app.route('/pbp/', methods=['POST', 'GET'])
 def pbp():
-	return render_template('pbp.html',gameid=20001)
+	gameid = 20001
+	message = None
+	if request.method == 'POST':
+		gameid = request.form['gameid']
+		event = request.form['event']
+		gyear = request.form['gyear']
+		# is event in 1,2,3
+		if event not in [str(x) for x in range(1,4)]:
+			message = "Event is not valid."
+		# is gyear in 2007-2012
+		elif gyear not in [str(x) for x in range(2007,2013)]:
+			message = "Game year is not valid."
+		# is gameid a 5 digit int
+		elif not gameid.isdigit() or len(gameid) != 5:
+			message = "Game id << %s >> is not valid" % (gameid)
+		else: 
+			searchGame = int(gyear+"0"+gameid)
+			# is this gameid in pbp data
+			sql = "SELECT * FROM pbp WHERE gid = %s and event = 'FAC' ORDER BY id, timedown DESC"
+			params = [searchGame]
+			print params
+			cur = g.db.execute(sql, params)
+			pbp = cur.fetchall()
+			if pbp == []:
+				message = "No records for this game found."
+			else:
+				table = []
+				for row in pbp:
+					homeList = [str(x) for x in [row[14], row[15], row[16], row[17], row[18], row[19]] if x > -1]
+					awayList = [str(x) for x in [row[8], row[9], row[10], row[11], row[12], row[13]] if x > -1]
+					homeNum = len(homeList)-1
+					awayNum = len(awayList)-1
+					home = ', '.join(homeList)
+					visitor = ', '.join(awayList)
+					# state 
+					state = str(awayNum)+"v"+str(homeNum)
+					# situation
+					if awayNum == homeNum: situation = "ES"
+					elif awayNum > homeNum: situation = "PP"
+					else: situation = "SH"
+					# location
+					text = row[7]
+					location = text[text.index('won')+4:text.index('-')-1]
+					# final	
+					datum = [row[3], row[4], row[5], home, visitor, state, situation, location]
+					table.append(datum)
+				return render_template('pbp-zones.html', table=table)
+	return render_template('pbp.html',gameid=gameid, error=message)
 
 # returns the api instructions
 @app.route('/toi/api/')
@@ -89,11 +136,9 @@ def toiapp(urlgid=None, urlper=None, urltrem=None):
 
 # todo for this function
 #	+ can enter 3 digit times
-#	+ send old values to form (use wtf-forms)
-#	+ get name of teams instead of home/away
-#	+ adjust for OT2,3...
-#	+ adjust for querying an OT that doesnt exist
-#	+ make into ajax / API
+#	+ send old values to form for checkbox 
+#	+ (use wtf-forms) 
+#	+ get if team is home or away
 #	+ prettier box to report numbers.
 @app.route('/toi/api/<int:urlgid>/<int:urlper>')
 @app.route('/toi/api/<int:urlgid>')
@@ -107,9 +152,8 @@ def toi(urlgid=None, urlper=None):
 
 	gameidForm = ""
 	timeidForm = "20:00"
-	api = False
 
-	if request.method == 'POST' or api == True:
+	if request.method == 'POST':
 		gyear = request.form['gyear']
 		gid = request.form['gameid']
 		gameid = str(gyear) + '0' + str(gid)

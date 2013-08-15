@@ -1,9 +1,18 @@
+<head>
 <style type="text/css">
 	table, td {
 		border: 1px solid black;
+		text-align: center;
 	}
 </style>
+	<title>pBp - Zone Start data</title>
+</head>
 
+<a href="#table1">Game Summary</a> | <a href="#table2">Away Team</a> | <a href="#table3">Home Team</a>
+
+<br /><br />
+
+<a id="table1"></a>
 <table cellpadding="2" cellspacing="2">
 	<tr>
 		<td>Period</td>
@@ -12,18 +21,74 @@
 		<td>Situation</td>
 		<td>State</td>
 		<td>Location</td>
-		<td>Visitors on-ice</td>
-		<td>Home on-ice</td>
+		<td colspan="6">Visitors on-ice</td>
+		<td colspan="6">Home on-ice</td>
 	</tr>
 	{% for row in table %}
 	<tr>
 		<td>{{ row[0] }}</td>
 		<td>{{ row[1] }}</td>
 		<td>{{ row[2] }}</td>
-		<td>{{ row[6] }}</td>
-		<td>{{ row[5] }}</td>
-		<td>{{ row[7] }}</td>
 		<td>{{ row[4] }}</td>
+		<td>{{ row[3] }}</td>
+		<td>{{ row[5] }}</td>
+		<td>{{ row[12] }}</td>
+		<td>{{ row[13] }}</td>
+		<td>{{ row[14] }}</td>
+		<td>{{ row[15] }}</td>
+		<td>{{ row[16] }}</td>
+		<td>{{ row[17] }}</td>
+		<td>{{ row[6] }}</td>
+		<td>{{ row[7] }}</td>
+		<td>{{ row[8] }}</td>
+		<td>{{ row[9] }}</td>
+		<td>{{ row[10] }}</td>
+		<td>{{ row[11] }}</td>
+	</tr>
+	{% endfor %}
+</table>
+
+<br /><br />
+
+<a id="table2"> </a>
+<table cellpadding="2" cellspacing="2">
+	<tr>
+		<td colspan="4">Away Team</td>
+	</tr>
+	<tr>
+		<td>Player</td>
+		<td>Defensive Zone</td>
+		<td>Neutral Zone</td>
+		<td>Offensive Zone</td>
+	</tr>
+	{% for row in aTable %}
+	<tr>
+		<td>{{ row[0] }}</td>
+		<td>{{ row[1] }}</td>
+		<td>{{ row[2] }}</td>
+		<td>{{ row[3] }}</td>
+	</tr>
+	{% endfor %}
+</table>
+
+<br /><br />
+
+<a id="table3"></a>
+<table cellpadding="2" cellspacing="2">
+	<tr>
+		<td colspan="4">Home Team</td>
+	</tr>
+	<tr>
+		<td>Player</td>
+		<td>Defensive Zone</td>
+		<td>Neutral Zone</td>
+		<td>Offensive Zone</td>
+	</tr>
+	{% for row in hTable %}
+	<tr>
+		<td>{{ row[0] }}</td>
+		<td>{{ row[1] }}</td>
+		<td>{{ row[2] }}</td>
 		<td>{{ row[3] }}</td>
 	</tr>
 	{% endfor %}

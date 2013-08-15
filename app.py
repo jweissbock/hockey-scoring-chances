@@ -36,11 +36,17 @@ def teardown_request(exception):
 def home():
   return render_template('home.html')
 
+# make it so users can link directly to the table
+@app.route('/pbp/zs/<int:urlgid>/', methods=['POST', 'GET'])
 @app.route('/pbp/', methods=['POST', 'GET'])
-def pbp():
+def pbp(urlgid=None):
 	gameid = 20001
 	message = None
-	if request.method == 'POST':
+	if urlgid is not None:
+		request.form['gameid'] = str(urlgid)[5:]
+		request.form['gyear'] = str(urlgid)[:4]
+		request.form['event'] == '1'
+	if request.method == 'POST' or urlgid is not None:
 		gameid = request.form['gameid']
 		event = request.form['event']
 		gyear = request.form['gyear']
@@ -65,26 +71,60 @@ def pbp():
 				message = "No records for this game found."
 			else:
 				table = []
+				homeStats = {}
+				awayStats = {}
+				hTable = []	# individual table for stats
+				aTable = []
 				for row in pbp:
 					homeList = [str(x) for x in [row[14], row[15], row[16], row[17], row[18], row[19]] if x > -1]
 					awayList = [str(x) for x in [row[8], row[9], row[10], row[11], row[12], row[13]] if x > -1]
 					homeNum = len(homeList)-1
 					awayNum = len(awayList)-1
-					home = ', '.join(homeList)
-					visitor = ', '.join(awayList)
+					homeList = homeList+[""]*(5-homeNum)
+					awayList = awayList+[""]*(5-awayNum)
 					# state 
 					state = str(awayNum)+"v"+str(homeNum)
 					# situation
 					if awayNum == homeNum: situation = "ES"
 					elif awayNum > homeNum: situation = "PP"
 					else: situation = "SH"
+					# convert time to readable
+					timeup = "%s:%s" % (divmod(row[4], 60))
+					timedown = "%s:%s" % (divmod(row[5], 60))
+					if len(timeup) - (timeup.index(':')+1) == 1: timeup = timeup + "0"
+					if len(timedown) - (timedown.index(':')+1) == 1: timedown = timedown + "0"
 					# location
 					text = row[7]
 					location = text[text.index('won')+4:text.index('-')-1]
+					# player data
+					for l in [homeList, awayList]:
+						stats = homeStats if l == homeList else awayStats
+						for p in l:
+							if p not in stats: stats[p] = [0,0,0]
+							if 'Def' in location: index = 0
+							elif 'Neu' in location: index = 1
+							else: index = 2
+							stats[p][index] += 1
 					# final	
-					datum = [row[3], row[4], row[5], home, visitor, state, situation, location]
+					datum = [row[3], timeup, timedown, state, situation, location]+homeList+awayList
 					table.append(datum)
-				return render_template('pbp-zones.html', table=table)
+				# convert players to list
+				for players in [homeStats, awayStats]:
+					itable = hTable if players == homeStats else aTable
+					for p in sorted(players.iterkeys()):
+						sql = "SELECT playername FROM shifts WHERE gameid=%s AND playernumber = %s GROUP BY playername ORDER BY ID LIMIT 1;"
+						if players == awayStats:
+							sql = "SELECT playername FROM shifts WHERE gameid=%s AND playernumber = %s GROUP BY playername ORDER BY ID DESC LIMIT 1;"
+						try:
+							pNum = int(p)
+						except: 
+							continue
+						params = [searchGame, pNum]
+						cur = g.db.engine.execute(sql, params)
+						name = cur.fetchone()
+						itable.append([name[0]]+players[p])
+				return render_template('pbp-zones.html', table=table, 
+											hTable=hTable, aTable=aTable)
 	return render_template('pbp.html',gameid=gameid, error=message)
 
 # returns the api instructions

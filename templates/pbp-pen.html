@@ -1,0 +1,46 @@
+<head>
+<style type="text/css">
+	table, td {
+		border: 1px solid black;
+		text-align: center;
+	}
+</style>
+	<title>pBp - Penalty data</title>
+</head>
+
+<a href="#table1">Game Summary</a> | <a href="#table2">Away Team</a> | <a href="#table3">Home Team</a>
+
+<br /><br />
+
+<a id="table1"></a>
+<table cellpadding="2" cellspacing="2">
+	<tr>
+		<td>Period</td>
+		<td>Time (Elapsed)</td>
+		<td>Time Game Clock</td>
+		<td>Offender</td>
+		<td>Infraction</td>
+		<td>Drawn By</td>
+		<td>Length (min)</td>
+	</tr>
+	{% for row in table %}
+	<tr>
+		<td>{{ row[0] }}</td>
+		<td>{{ row[1] }}</td>
+		<td>{{ row[2] }}</td>
+		<td colspan="4">{{ row[3] }}</td>
+	</tr>
+	{% endfor %}
+</table>
+
+<br /><br />
+
+<a id="table2"> </a>
+<table cellpadding="2" cellspacing="2">
+</table>
+
+<br /><br />
+
+<a id="table3"></a>
+<table cellpadding="2" cellspacing="2">
+</table>

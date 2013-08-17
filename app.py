@@ -37,6 +37,30 @@ def home():
   return render_template('home.html')
 
 # return the table for penalties
+def pbpSA(gameid, gyear):
+	searchGame = int(gyear+"0"+gameid)
+	# is this gameid in pbp data
+	sql = "SELECT * FROM pbp WHERE gid = %s AND (event = 'GOAL' or event = 'SHOT' or event = 'MISS' or event = 'BLOCK')"
+	params = [searchGame]
+	cur = g.db.execute(sql, params)
+	pbp = cur.fetchall()
+	if pbp == []:
+		return redirect(url_for('pbp', gameid=gameid))
+	else:
+		table = []
+		for row in pbp:
+			print row
+			# convert time to readable
+			timeup = "%s:%s" % (divmod(row[4], 60))
+			timedown = "%s:%s" % (divmod(row[5], 60))
+			if len(timeup) - (timeup.index(':')+1) == 1: timeup = timeup + "0"
+			if len(timedown) - (timedown.index(':')+1) == 1: timedown = timedown + "0"
+			data = [row[3], timeup, timedown, row[7]]
+			table.append(data)
+		return render_template('pbp-sa.html', table=table)
+
+
+# return the table for penalties
 def pbpPEN(gameid, gyear):
 	searchGame = int(gyear+"0"+gameid)
 	# is this gameid in pbp data
@@ -54,7 +78,23 @@ def pbpPEN(gameid, gyear):
 			timedown = "%s:%s" % (divmod(row[5], 60))
 			if len(timeup) - (timeup.index(':')+1) == 1: timeup = timeup + "0"
 			if len(timedown) - (timedown.index(':')+1) == 1: timedown = timedown + "0"
-			data = [row[3], timeup, timedown, row[7].decode("utf-8")]
+			# get the penalty
+			penalty = row[7].replace('\xc2','')
+			penalty = penalty.replace('\xa0',' ')
+			# get the offender name
+			if '#' in penalty[:penalty.index('min)')]:
+				offender = penalty.split()[2]# perso
+			else:
+				offender = ' '.join(penalty.split()[:2]) # team offender
+			# get the infraction
+			infraction = penalty[penalty.index(offender)+len(offender):penalty.index('(')].strip()
+			# get the drawn by
+			if 'bench' in penalty: drawer = None	
+			else: drawer = penalty.split()[-1]
+			# length	
+			print penalty
+			length = penalty[penalty.index('(')+1:penalty.index(' min)')]
+			data = [row[3], timeup, timedown, offender, infraction, drawer, length]
 			table.append(data)
 		return render_template('pbp-pen.html', table=table)
 
@@ -138,7 +178,7 @@ def getpbpZS(event,urlfullgame):
 		gyear = str(urlfullgame)[:4]
 		if event.upper() == 'ZS': return pbpZS(gameid, gyear)
 		elif event.upper() == 'PEN': return pbpPEN(gameid, gyear)
-		elif event.upper() == 'SA': return pbpZS(gameid, gyear)
+		elif event.upper() == 'SA': return pbpSA(gameid, gyear)
 
 # make it so users can link directly to the table
 @app.route('/pbp/', methods=['POST', 'GET'])

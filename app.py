@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, session, g, redirect, url_for
 from urllib2 import urlopen
 from contextlib import closing
 from bs4 import BeautifulSoup
-import re, json, sqlite3, MySQLdb, sqlalchemy
+import re, json, sqlite3, MySQLdb, sqlalchemy, fnmatch
 import scrape
 from werkzeug.contrib.cache import SimpleCache
 
@@ -49,13 +49,41 @@ def pbpSA(gameid, gyear):
 	else:
 		table = []
 		for row in pbp:
-			print row
 			# convert time to readable
 			timeup = "%s:%s" % (divmod(row[4], 60))
 			timedown = "%s:%s" % (divmod(row[5], 60))
 			if len(timeup) - (timeup.index(':')+1) == 1: timeup = timeup + "0"
 			if len(timedown) - (timedown.index(':')+1) == 1: timedown = timedown + "0"
-			data = [row[3], timeup, timedown, row[7]]
+			# get the team
+			rowSplit = row[7].split()
+			team = rowSplit[0]
+			# get the Shooter
+			shooter = rowSplit[rowSplit.index(fnmatch.filter(rowSplit, '#*')[0])+1]
+			#if ')' == shooter.strip()[-1]: shooter = shooter[:-3]
+			shooter = re.sub('\(\d\)','', shooter.rstrip())
+			shooter = shooter.replace(',','')
+			# type of shot
+			typeShot = ['Backhand', 'Snap', 'Slap', 'Tip-In', 'Wrist']
+			typeShot = ''.join([x for x in typeShot if x.lower() in row[7].lower()])
+			# distance
+			distance = re.findall(r'(\d+ ft.)', row[7])
+			distance = ''.join(distance)
+			# home and visitors
+			homeList = [str(x) for x in [row[14], row[15], row[16], row[17], row[18], row[19]] if x > -1]
+			awayList = [str(x) for x in [row[8], row[9], row[10], row[11], row[12], row[13]] if x > -1]
+			homeNum = len(homeList)-1 # count them for the state
+			awayNum = len(awayList)-1
+			homeList = homeList+[""]*(5-homeNum) # add empty pers if missing man
+			awayList = awayList+[""]*(5-awayNum)
+			# state 
+			state = str(awayNum)+"v"+str(homeNum)
+			# situation
+			if awayNum == homeNum: situation = "ES"
+			elif awayNum > homeNum: situation = "PP"
+			else: situation = "SH"
+			# return the data
+			data = [row[3], timeup, timedown, team, shooter, row[6], typeShot, distance, 
+					state, situation] + awayList + homeList
 			table.append(data)
 		return render_template('pbp-sa.html', table=table)
 

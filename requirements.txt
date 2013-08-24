@@ -1,5 +1,6 @@
 BeautifulSoup==3.2.1
 Flask==0.10.1
+Flask-Classy==0.6.3
 Flask-SQLAlchemy==1.0
 Jinja2==2.6
 Markdown==2.2.1
@@ -9,6 +10,7 @@ WTForms==1.0.4
 Werkzeug==0.8.3
 html5lib==1.0b2
 itsdangerous==0.22
+mysql-connector-python==1.0.10
 praw==2.0.12
 requests==1.1.0
 six==1.2.0

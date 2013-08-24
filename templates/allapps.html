@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h2>All Apps</h2>
+  <ul>
+  	<li><a href="{{ url_for('home') }}">Hockey Scoring Chances</a></li>
+  	<li><a href="{{ url_for('toi:index') }}">Time on Ice app</a> Search through all shifts to find out who was on the ice at a given time.</li>
+  	<li><a href="{{ url_for('pbp:index') }}">Play by Play app</a> - Search through pBp data for zone starts, penalties and shot attempts.</li>
+  	<li><a href="http://zentries.pythonanywhere.com">Zone Entry Nexus</a> - manage zone entry and exits</li>
+  </ul>
+{% endblock %}

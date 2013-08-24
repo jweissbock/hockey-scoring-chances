@@ -3,7 +3,7 @@
   <h2>Time on Ice Database</h2>
   <p>I've taken all the data from the TOI sheets the NHL releases and put them in an easily searchable database.  Enter a gameid, period and time and find the last known players on the ice.  This used to be based on TOI data, contact Josh if you're interested in that<br /><br />
     {% if error %}<p class=error><strong>Error: </strong>{{ error }}</p>{% endif %}
-    <form action="{{ url_for('toi') }}" method="post">
+    <form action="{{ url_for('toi:index') }}" method="post">
   <p style="margin-top: 1em; margin-bottom: 1em ">
     <table style="margin: auto; text-align: center; border-spacing: 10px">
       <tr>
@@ -51,6 +51,6 @@
       </tr>
     </table><br /><br />
   {% endif %}
-  <p>If you think the database is giving you wrong results, you want to get a .csv copy of the database, want to know <a href="{{ url_for('toiAPIInstructions') }}">how to use the API</a> for your site, or the database is missing a game, contact me at @joshweissbock or at josh [dot] weissbock [@] gmail [dot] com.
+  <p>If you think the database is giving you wrong results, you want to get a .csv copy of the database, want to know <a href="{{ url_for('toi:APIInstructions') }}">how to use the API</a> for your site, or the database is missing a game, contact me at @joshweissbock or at josh [dot] weissbock [@] gmail [dot] com.
 	</p><br /><br />
 {% endblock %}

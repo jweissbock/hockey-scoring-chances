@@ -3,7 +3,7 @@
   <h2>Play by Play Event Database</h2>
   <p>[Place Holder]<br /><br />
     {% if error %}<p class=error><strong>Error: </strong>{{ error }}</p>{% endif %}
-    <form action="{{ url_for('pbp') }}" method="post">
+    <form action="{{ url_for('pbp:index') }}" method="post">
   <p style="margin-top: 1em; margin-bottom: 1em ">
     <table style="margin: auto; text-align: center; border-spacing: 10px">
       <tr>

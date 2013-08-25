@@ -51,3 +51,17 @@ Manual type in game type
 shot type
 period - need to add OT
 Toggle tracker on/off?
+
+- work on hsc app!! 
+	- change it to flask-classy
+		- docs: http://pythonhosted.org/Flask-Classy/
+		- original docs on github: https://github.com/apiguy/flask-classy
+		- Alex example: https://github.com/bluemoon/flask-base
+	- parse future games
+	- HSC
+		- redo newest season TOI
+		- update deleting.
+		- mysql backups
+		- TOI API to add event + description 
+		- link directly to php sheets
+	- game reports off database

@@ -25,9 +25,9 @@
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
-            <option value="4">OT1</option></select>
-            <option value="5">OT2</option></select>
-            <option value="6">OT3</option></select>
+            <option value="4">OT1</option>
+            <option value="5">OT2</option>
+            <option value="6">OT3</option>
             <option value="7">OT4</option></select></td>
         <td><input type=text name=time value="{{ timerem }}" maxlength="5" /></td>
       </tr>
@@ -51,6 +51,6 @@
       </tr>
     </table><br /><br />
   {% endif %}
-  <p>If you think the database is giving you wrong results, you want to get a .csv copy of the database, want to know <a href="{{ url_for('toi:APIInstructions') }}">how to use the API</a> for your site, or the database is missing a game, contact me at @joshweissbock or at josh [dot] weissbock [@] gmail [dot] com.
+  <p>If you think the database is giving you wrong results, you want to get a .csv copy of the database, want to know <a href="{{ url_for('apibase') }}">how to use the API</a> for your site, or the database is missing a game, contact me at @joshweissbock or at josh [dot] weissbock [@] gmail [dot] com.
 	</p><br /><br />
 {% endblock %}

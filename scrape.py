@@ -3,9 +3,10 @@ import urllib2
 import re
 import copy, logging, requests
 
-def getGamePlayerStats(homeTeam, awayTeam, gameId):
+def getGamePlayerStats(year, homeTeam, awayTeam, gameId):
 	# try to open the url so we can get the html and parse it
-	url = "http://www.nhl.com/scores/htmlreports/20122013/ES0"+str(gameId)+".HTM"
+	print "YEAR: "+str(year)
+	url = "http://www.nhl.com/scores/htmlreports/"+str(year)+"/ES0"+str(gameId)+".HTM"
 
 	try:
 		request = urllib2.Request(url)
@@ -50,8 +51,10 @@ def getGamePlayerStats(homeTeam, awayTeam, gameId):
 
 	return [homeTeam, awayTeam]
 
-def getGameStates(gameid):
-	url = "http://www.nhl.com/scores/htmlreports/20122013/PL0"+str(gameid)+".HTM"
+def getGameStates(year,gameid):
+	print "YEAR: "+str(year)
+	url = "http://www.nhl.com/scores/htmlreports/"+str(year)+"/PL0"+str(gameid)+".HTM"
+	print url
 
 	r = requests.get(url)
 	the_page = r.text

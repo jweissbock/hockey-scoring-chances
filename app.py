@@ -52,23 +52,24 @@ def about():
 
 @app.route('/allgames')
 def allgames():
-	cur = g.db.execute('SELECT count(*) as numchances, gameid FROM chances GROUP BY gameid ORDER BY gameid DESC')
+	cur = g.db.execute('SELECT count(*) as numchances, gameid, yearid FROM chances GROUP BY yearid, gameid ORDER BY yearid, gameid DESC')
 	bigdata = [list(row) for row in cur.fetchall()]
 	return render_template('allgames.html', alldata=bigdata)
 
 #http://www.reddit.com/r/learnpython/comments/1bie5m/new_to_python_flask_web_development_how_can_i/
-@app.route('/gamereport/<int:gameid>')
-def gamereport(gameid):
+@app.route('/gamereport/<int:year>/<int:gameid>')
+def gamereport(year,gameid):
+	
 	cache = SimpleCache()
 	bigdata = []
 	try:
-		cur = g.db.execute('SELECT team,period,time,comment FROM chances WHERE gameid=%s ORDER BY period, time DESC', 
-						[gameid])
+		cur = g.db.execute('SELECT team,period,time,comment FROM chances WHERE yearid=%s AND gameid=%s ORDER BY period, time DESC', 
+						[year,gameid])
 		bigdata = [list(row) for row in cur.fetchall()]
-	except:
+	except Exception as e:
 		# failed to load, quit
 		app.logger.error('Unable to load data for game '+str(gameid))
-		return 'Unable to load game data for this game'
+		return 'Unable to load game data for this game'+str(e)
 		
 
 	# if nothing in bigdata now we dont have anything on this team so we abort
@@ -79,7 +80,7 @@ def gamereport(gameid):
 	# need to find a way to cache it
 	events = cache.get('events'+str(gameid))
 	if events is None:
-		events = scrape.getGameStates(gameid)
+		events = scrape.getGameStates(year,gameid)
 		cache.set('events'+str(gameid), events, timeout=60*60*24)
 
 	# for the second/third tables
@@ -181,7 +182,7 @@ def gamereport(gameid):
 	# pass dictionaries to get all info
 	getPlayerInfo = cache.get('getPlayerInfo'+str(gameid))
 	if getPlayerInfo is None:
-		getPlayerInfo = scrape.getGamePlayerStats(gameSummaryHome, gameSummaryAway, gameid)
+		getPlayerInfo = scrape.getGamePlayerStats(year, gameSummaryHome, gameSummaryAway, gameid)
 		cache.set('getPlayerInfo'+str(gameid), getPlayerInfo, timeout=60*60*24)
 
 	gameSummaryHome = [getPlayerInfo[0][x] for x in getPlayerInfo[0]]

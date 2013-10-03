@@ -27,6 +27,7 @@ class pbp(FlaskView):
 		elif not gameid.isdigit() or len(gameid) != 5:
 			message = "Game id << %s >> is not valid" % (gameid)
 		else: 
+			# i guess here... check if anything in the db... if not scrape it
 			if event == '1': event = 'zs'
 			elif event == '2': event = 'pen'
 			else: event = 'SA'

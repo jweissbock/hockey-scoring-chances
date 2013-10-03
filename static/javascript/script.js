@@ -40,8 +40,9 @@ $(document).ready(function() {
 
 	$("#gameReport").on('click', function(e) {
 		gameId = $("#sGameID").val();
+		year = $("#gYear").val();
 		
-		window.open('/gamereport/'+gameId, '_blank')
+		window.open('/gamereport/'+year+'/'+gameId, '_blank')
 	});
 
 	$("#saveChances").on('click', function(e) {

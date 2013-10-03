@@ -93,10 +93,10 @@ class toi(FlaskView):
 								team1roster=team1roster, team2roster=team2roster,
 								error = message, gameid=gameidForm, timerem=timeidForm)
 
-	@route('/api/<int:urlgid>/<int:urlper>/')
+	@route('/api/', endpoint='apibase')
 	@route('/api/<int:urlgid>/')
-	@route('/api/')
-	def APIInstructions(self, urlgid=None, urlper=None):
+	@route('/api/<int:urlgid>/<int:urlper>/')
+	def APIInstruction(self, urlgid=None, urlper=None):
 		return render_template('toi-instructions.html')
 
 	@route('/api/<int:urlgid>/<int:urlper>/<int:urltrem>')

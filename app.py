@@ -52,14 +52,14 @@ def about():
 
 @app.route('/allgames')
 def allgames():
-	cur = g.db.execute('SELECT count(*) as numchances, gameid, yearid FROM chances GROUP BY yearid, gameid ORDER BY yearid, gameid DESC')
+	cur = g.db.execute('SELECT count(*) as numchances, gameid, yearid FROM chances GROUP BY yearid, gameid ORDER BY yearid DESC, gameid DESC')
 	bigdata = [list(row) for row in cur.fetchall()]
 	return render_template('allgames.html', alldata=bigdata)
 
 #http://www.reddit.com/r/learnpython/comments/1bie5m/new_to_python_flask_web_development_how_can_i/
 @app.route('/gamereport/<int:year>/<int:gameid>')
 def gamereport(year,gameid):
-	
+
 	cache = SimpleCache()
 	bigdata = []
 	try:

@@ -19,8 +19,10 @@ $(window).load(function() {
 	  }
 	});
 	loadGameId = $.getUrlVar('gameid');
+	year = $.getUrlVar('year')
 	if (loadGameId != null) {
 		$("#gameID").val(loadGameId);
+		$('#gYear').val(year)
 		$("#enterGame").click();
 	}
 })

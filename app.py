@@ -82,6 +82,14 @@ def gamereport(year,gameid):
 
 	gameid = int(str(year)[0:4] + "0" + str(gameid)[0:5])
 
+	# count shifts for both teams
+	# if either is zero, delete it 
+	cur = g.db.execute('SELECT COUNT(*) as num, location FROM shifts WHERE gameid = %s GROUP BY location', [gameid])
+	data = cur.fetchall()
+	if len(data) == 1:
+		# so if we are missing data for a team, delete it all
+		g.db.execute('DELETE FROM shifts WHERE gameid = %s', [gameid])
+
 	# check if there is any TOI data for this game.  If not, parse it
 	cur = g.db.execute('SELECT * FROM shifts WHERE gameid = %s', [gameid])
 	shifts = cur.fetchall()
@@ -108,10 +116,6 @@ def gamereport(year,gameid):
 
 		# calculate the state
 		state = str(home-1)+'v'+str(away-1)
-
-		print home
-		print away
-		print chance[0]
 
 		# figures out what type of chance this is for each of the players
 		# based on state of the game and if home/away did the chance

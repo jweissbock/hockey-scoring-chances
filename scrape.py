@@ -5,7 +5,6 @@ import copy, logging, requests
 
 def getGamePlayerStats(year, homeTeam, awayTeam, gameId):
 	# try to open the url so we can get the html and parse it
-	print "YEAR: "+str(year)
 	url = "http://www.nhl.com/scores/htmlreports/"+str(year)+"/ES0"+str(gameId)+".HTM"
 
 	try:
@@ -52,9 +51,7 @@ def getGamePlayerStats(year, homeTeam, awayTeam, gameId):
 	return [homeTeam, awayTeam]
 
 def getGameStates(year,gameid):
-	print "YEAR: "+str(year)
 	url = "http://www.nhl.com/scores/htmlreports/"+str(year)+"/PL0"+str(gameid)+".HTM"
-	print url
 
 	r = requests.get(url)
 	the_page = r.text

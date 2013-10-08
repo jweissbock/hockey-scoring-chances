@@ -16,6 +16,7 @@ def getGameTOI(gameid):
 	away = "http://www.nhl.com/scores/htmlreports/%s/TV0%s.HTM" % (year, digit)
 
 	for url in [home, away]:
+		print url
 		try:
 			parsePage(url, gameid)
 		except:

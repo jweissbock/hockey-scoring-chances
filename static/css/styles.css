@@ -98,3 +98,7 @@ table {
     background:red;
     text-align: center;
 }​
+
+#instructions {
+	margin-top: 2em;
+}

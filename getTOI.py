@@ -72,7 +72,7 @@ def parsePage(url, gameid):
 		# insert into database
 
 # load all games
-allGames = []
+"""allGames = []
 with open('games.csv', 'rb') as f:
 	reader = csv.reader(f)
 	for row in reader:
@@ -80,6 +80,6 @@ with open('games.csv', 'rb') as f:
 
 for game in allGames:
 	print game
-	getGameTOI(game)
+	getGameTOI(game)"""
 
 #getGameTOI(2012020005)

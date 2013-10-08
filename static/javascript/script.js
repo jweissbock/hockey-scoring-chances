@@ -39,6 +39,7 @@ $(document).ready(function() {
 	});
 
 	$("#gameReport").on('click', function(e) {
+		$("#saveChances").click();
 		gameId = $("#sGameID").val();
 		year = $("#gYear").val();
 		
@@ -131,6 +132,7 @@ $(document).ready(function() {
 	});
 
 	// try and prevent users from entering weird times like 20:53
+	// need to be updated OT
 	$(document).on("change", ".pSec", function(e) {
 		if ($(this).val() > 0 && $(this).prev().val() == 20) {
 			$(this).val(0);
@@ -161,7 +163,7 @@ $(document).ready(function() {
 		var row = "<tr class=\"puckTableRow\" name="+counter+">"
 				+"<td>"+counter+"</td>"
 				+"<td class=\"team\">"+team+"</td>"
-				+"<td><select class=\"period\"><option>1</option><option>2</option><option>3</option></td>"
+				+"<td><select class=\"period\"><option>1</option><option>2</option><option>3</option> <option value=4>OT</option></td>"
 				+"<td>"+periodMinutes+" : "+pSeconds+"</td>"
 				+"<td><input type=\"text\" class=\"comment\" maxlength=\"255\" /></td>"
 				+"<td><input type=\"button\" value=\"Delete\" class=\"removeShot\" name=\""+counter+"\" /></td>"

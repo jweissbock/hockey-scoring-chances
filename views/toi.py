@@ -2,7 +2,7 @@ from __future__ import with_statement
 from flask import Flask, render_template, request, session, g, redirect, url_for, \
 	 abort, flash
 from flask.ext.classy import FlaskView, route
-import fnmatch, re, json
+import fnmatch, re, json, getTOI
 
 class toi(FlaskView):
 	# todo for this function
@@ -51,12 +51,10 @@ class toi(FlaskView):
 		# check if gid is in db
 		cur = g.db.execute('SELECT * FROM shifts WHERE gameid=%s', [gameid])
 
-		if not gyear.isdigit() or int(gyear) not in range(2007, 2013):
+		if not gyear.isdigit() or int(gyear) not in range(2007, 2014):
 			message = "Game year is not valid."
 		elif not gid.isdigit() or len(gid) != 5:
 			message = "Game ID is not valid."
-		elif cur.fetchone() is None:
-			message = "This game id does not exist in our database."
 		elif period not in ['1','2','3', '4']:
 			message = "Period is not valid."
 		elif not re.match(r'^\d\d:\d\d$', time):
@@ -64,6 +62,10 @@ class toi(FlaskView):
 		elif int(mins)*60 + int(secs) > 1200: 
 			message = "Time is too high."
 		else:
+			if cur.fetchone() is None:
+				#message = "This game id does not exist in our database."
+				getTOI.getGameTOI(gameid)
+			# fails to grab anything?  Handle this
 			# SELECT * FROM pbp WHERE cast(timedown as integer) >= 1166 AND gid=30151 AND period = 1 ORDER BY gnumber DESC LIMIT 1;
 			# SELECT * FROM shifts WHERE gameid = 2012020123 AND shift_start >= 1000 AND shift_end < 1000 AND period = 2 ORDER BY playerteamname, playernumber+0;
 			sql = "SELECT * FROM shifts WHERE gameid = %s AND shift_start >= %s AND shift_end < %s AND period = %s ORDER BY playerteamname, playernumber+0"

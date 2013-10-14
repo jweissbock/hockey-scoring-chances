@@ -97,6 +97,11 @@ class toi(FlaskView):
 
 	@route('/roster/<int:gameid>')
 	def roster(self, gameid):
+		# not in game?  parse in
+		cur = g.db.execute('SELECT COUNT(*) FROM shifts WHERE gameid = %s', [gameid])
+		results = cur.fetchone()
+		if results[0] == 0:
+			getTOI.getGameTOI(gameid)
 		cur = g.db.execute('SELECT playernumber, playername, location FROM shifts WHERE gameid = %s GROUP BY playername ORDER BY location, playernumber+0;', [gameid])
 		players = cur.fetchall()
 		home = {}

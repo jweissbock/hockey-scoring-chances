@@ -17,12 +17,19 @@
     		});
 
     		$('#getHtml').change();
+
+    		$('#refetch').click(function(e) {
+    			var newurl = document.URL+"true";
+    			window.location = newurl;
+    		});
       	});
       </script>
     </head>
     <body>
 
 <div style="text-align: center">
+
+	<p><a href="{{ url_for('home') }}">Home</a> | Data Wonky?  <input type="button" value="Refetch Data" id="refetch" /></p>
 
 <h1>Scoring Chance Summary</h1>
 <div id="table1">

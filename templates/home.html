@@ -27,9 +27,12 @@ $(window).load(function() {
 	}
 
 	function save() {
-		$("#saveChances").click();
+		// check if we are showing the content
+		if ($("#content").is(":visible")) {
+			$("#saveChances").click();
+		}
 	}
-	setInterval(save, 60000)
+	setInterval(save, 18000)
 })
 </script>
    		<div id="gameInfo">

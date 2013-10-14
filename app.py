@@ -57,8 +57,9 @@ def allgames():
 	return render_template('allgames.html', alldata=bigdata)
 
 #http://www.reddit.com/r/learnpython/comments/1bie5m/new_to_python_flask_web_development_how_can_i/
-@app.route('/gamereport/<int:year>/<int:gameid>')
-def gamereport(year,gameid):
+@app.route('/gamereport/<int:year>/<int:gameid>/')
+@app.route('/gamereport/<int:year>/<int:gameid>/<fetch>')
+def gamereport(year,gameid,fetch=None):
 	# check if there are any chances tracked, if not exit
 	bigdata = []
 	# for the second/third tables
@@ -80,7 +81,12 @@ def gamereport(year,gameid):
 	if len(mydata) == 0:
 		return 'There is no saved data for this game.  Did you forget to press save?'
 
+	oGameID = gameid
 	gameid = int(str(year)[0:4] + "0" + str(gameid)[0:5])
+
+	if fetch == "true":
+		g.db.execute('DELETE FROM shifts WHERE gameid = %s', [gameid])
+		return redirect(url_for('gamereport', year=year, gameid=oGameID))
 
 	# count shifts for both teams
 	# if either is zero, delete it 
@@ -166,16 +172,16 @@ def gamereport(year,gameid):
 		
 		# figure out which column to add to
 		if state in ["5v5", "4v4", "3v3"]:
-			periodPos = 3 if chance == 0 else 4
+			periodPos = 3 if chance[0] == 0 else 4
 		elif state == "5v4":
-			periodPos = 5 if chance == 0 else 6
+			periodPos = 5 if chance[0] == 0 else 6
 		elif state == "5v4":
-			periodPos = 7 if chance == 0 else 8
+			periodPos = 7 if chance[0] == 0 else 8
 		elif state == "4v5":
-			periodPos = 9 if chance == 0 else 10
+			periodPos = 9 if chance[0] == 0 else 10
 		else:
 			# it must be 3v5
-			periodPos = 11 if chance == 0 else 12
+			periodPos = 11 if chance[0] == 0 else 12
 
 		# add to tempPeriodSummary
 		tempPeriodSummary[periodPos] += 1

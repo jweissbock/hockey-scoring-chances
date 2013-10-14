@@ -95,6 +95,23 @@ class toi(FlaskView):
 								team1roster=team1roster, team2roster=team2roster,
 								error = message, gameid=gameidForm, timerem=timeidForm)
 
+	@route('/roster/<int:gameid>')
+	def roster(self, gameid):
+		cur = g.db.execute('SELECT playernumber, playername, location FROM shifts WHERE gameid = %s GROUP BY playername ORDER BY location, playernumber+0;', [gameid])
+		players = cur.fetchall()
+		home = {}
+		away = {}
+		for data in players:
+			if data[2] == 'h':
+				home[data[0]] = data[1]
+			else:
+				away[data[0]] = data[1]
+		data = {}
+		data['h'] = home
+		data['v'] = away
+		return json.dumps(data)
+
+
 	@route('/api/', endpoint='apibase')
 	@route('/api/<int:urlgid>/')
 	@route('/api/<int:urlgid>/<int:urlper>/')

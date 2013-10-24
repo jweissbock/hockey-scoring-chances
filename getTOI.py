@@ -15,12 +15,21 @@ def getGameTOI(gameid):
 	home = "http://www.nhl.com/scores/htmlreports/%s/TH0%s.HTM" % (year, digit)
 	away = "http://www.nhl.com/scores/htmlreports/%s/TV0%s.HTM" % (year, digit)
 
-	for url in [home, away]:
-		print url
-		try:
-			parsePage(url, gameid)
-		except:
-			pass
+	while True:
+		# delete all
+		engine.execute('DELETE FROM shifts WHERE gameid = %s', [gameid])
+		
+		for url in [home, away]:
+			try:
+				parsePage(url, gameid)
+			except:
+				pass
+
+		# count in both, if >0 in both, break
+		sql = "SELECT COUNT(*) as num FROM (SELECT count(*) as num2, location FROM shifts WHERE gameid = %s GROUP BY location) as data"
+		foo = engine.execute(sql, [gameid])
+		if foo.fetchone()[0] == 2:
+			break
 
 def parsePage(url, gameid):
 	r = requests.get(url)

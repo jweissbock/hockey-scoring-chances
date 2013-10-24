@@ -95,6 +95,13 @@ class toi(FlaskView):
 								team1roster=team1roster, team2roster=team2roster,
 								error = message, gameid=gameidForm, timerem=timeidForm)
 
+	@route('/roster/<int:gameid>/<fetch>')
+	def rosterRedo(self, gameid, fetch=None):
+		if fetch == "true":
+			# delete from this game id
+			g.db.execute('DELETE FROM shifts WHERE gameid = %s', [gameid])
+		return redirect(url_for('toi:roster',gameid=gameid))
+
 	@route('/roster/<int:gameid>')
 	def roster(self, gameid):
 		# not in game?  parse in

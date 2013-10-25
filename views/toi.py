@@ -114,6 +114,7 @@ class toi(FlaskView):
 		home = {}
 		away = {}
 		for data in players:
+			indata = "".join(i for i in data[1] if ord(i) < 128)
 			if data[2] == 'h':
 				home[data[0]] = data[1]
 			else:

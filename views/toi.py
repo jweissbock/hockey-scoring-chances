@@ -95,6 +95,38 @@ class toi(FlaskView):
 								team1roster=team1roster, team2roster=team2roster,
 								error = message, gameid=gameidForm, timerem=timeidForm)
 
+	@route('/onice/')
+	def onice(self):
+		oGid = request.args.get('gameid')
+		exits = request.args.get('exits')
+		onIcePlayers = {}
+		# check if game id is real
+		if not str(oGid).isdigit() or len(str(oGid)) != 10:
+			return "Game ID is invalid"
+		# parse TOI if need to
+		cur = g.db.execute('SELECT COUNT(*) FROM shifts WHERE gameid = %s', [oGid])
+		results = cur.fetchone()
+		if results[0] == 0:
+			getTOI.getGameTOI(oGid)
+
+		for e in exits.split(","):
+			onIcePlayers[e] = []
+			eData = e.split(":")
+			period = eData[0]
+			tRemaining = eData[1]
+			team = eData[2]
+			location = 'h' if str(team) == '1' else 'v'
+			# find the players for this period, time, team
+			sql = "SELECT * FROM shifts WHERE gameid = %s AND shift_start >= %s AND shift_end < %s AND period = %s AND location = %s ORDER BY playerteamname, playernumber+0"
+			params = [oGid, tRemaining, tRemaining, period, location]
+			cur = g.db.execute(sql, params)
+			pInExits = cur.fetchall()
+			for player in pInExits:
+				onIcePlayers[e].append( player[4] )
+			print "%s - %s" % (period, tRemaining)
+		return json.dumps(onIcePlayers)
+		# return the dictionary
+
 	@route('/roster/<int:gameid>/<fetch>')
 	def rosterRedo(self, gameid, fetch=None):
 		if fetch == "true":
